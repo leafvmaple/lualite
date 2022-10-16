@@ -1,0 +1,40 @@
+#include "tstring.h"
+#include "tstate.h"
+#include "tgc.h"
+
+void luaS_resize(lua_State* L, int newsize) {
+    stringtable *tb = nullptr;
+
+    tb = &_G(L)->strt;
+
+    tb->hash.reserve(newsize);
+}
+
+TString* newlstr(lua_State* L, const char* str, size_t l) {
+    TString* ts = nullptr;
+    stringtable* tb = nullptr;
+
+    ts = (TString*)malloc(sizeof(TString) + sizeof(char) * (l + 1));
+    ts->tsv.len = l;
+    ts->tsv.hash = 0;
+    ts->tsv.marked = _luaC_white(_G(L));
+    ts->tsv.tt = LUA_TSTRING;
+    ts->tsv.reserved = 0;
+
+    memcpy(ts->s, str, l * sizeof(char));
+    ts->s[l] = '\0';
+
+    tb = &_G(L)->strt;
+    tb->hash[str] = &ts->tsv;
+    tb->nuse++;
+
+    return ts;
+}
+
+TString* luaS_newlstr(lua_State* L, const char* str, size_t l) {
+    GCObject* o = _G(L)->strt.hash[str];
+    if (o) {
+        return (TString*)o;
+    }
+    return newlstr(L, str, l);
+}
