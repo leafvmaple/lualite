@@ -1,5 +1,6 @@
 #include "lua.h"
 #include "tauxlib.h"
+#include "lualib.h"
 
 struct Smain {
     int argc;
@@ -9,6 +10,7 @@ struct Smain {
 
 static int pmain(lua_State* L) {
     Smain* s = (struct Smain*)lua_touserdata(L, 1);
+    luaL_openlibs(L);
     return 0;
 }
 
@@ -22,3 +24,4 @@ int main(int argc, char** argv) {
     lua_State* L = luaL_newstate();
     ret = lua_cpcall(L, &pmain, &s);
 }
+

@@ -51,6 +51,15 @@
     <ClCompile Include="src\tfunc.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\tinit.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tbaselib.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tvm.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\tauxlib.h">
@@ -87,6 +96,12 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="src\tfunc.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lualib.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\tvm.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

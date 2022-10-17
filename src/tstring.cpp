@@ -21,8 +21,8 @@ TString* newlstr(lua_State* L, const char* str, size_t l) {
     ts->tsv.tt = LUA_TSTRING;
     ts->tsv.reserved = 0;
 
-    memcpy(ts->s, str, l * sizeof(char));
-    ts->s[l] = '\0';
+    memcpy(ts->tsv.s, str, l * sizeof(char));
+    ts->tsv.s[l] = '\0';
 
     tb = &_G(L)->strt;
     tb->hash[str] = &ts->tsv;

@@ -2,11 +2,15 @@
 #pragma warning(disable : 4200)
 
 #include <list>
+#include <vector>
+#include <unordered_map>
 
 #include "lua.h"
 #include "tlimits.h"
 
 typedef double lua_Number;
+
+struct TValue;
 
 struct GCObject {
     // GCObject* next;
@@ -14,19 +18,64 @@ struct GCObject {
     lu_byte marked;
 };
 
-struct Table : GCObject {
+union Value {
+	GCObject* gc;
+	void* p;
+	lua_Number n;
+	int b;
+};
 
+struct TValue
+{
+	Value value;
+	int tt;
+
+    bool operator==(const TValue& k) const;
 };
 
 union TString {
-    L_Umaxalign dummy;  /* ensures maximum alignment for strings */
-    struct : GCObject {
-        lu_byte reserved;      // 字符串为系统保留标识符时，这里不为0
-        unsigned int hash;
-        size_t len;
-    } tsv;
-    char s[0];
+	L_Umaxalign dummy;  /* ensures maximum alignment for strings */
+	struct : GCObject {
+		lu_byte reserved;      // 字符串为系统保留标识符时，这里不为0
+		unsigned int hash;
+		size_t len;
+        char s[0];
+	} tsv;
+
 };
+
+inline size_t keyhash(const TValue& k) {
+    switch (k.tt)
+    {
+    case LUA_TSTRING:
+    {
+		TString* s = (TString*)k.value.gc;
+		return std::hash<const char*>{}(s->tsv.s);
+    }
+    default:
+    {
+		return 0;
+    }
+    }
+}
+
+inline bool TValue::operator==(const TValue& k) const {
+	return keyhash(*this) == keyhash(k);
+}
+
+struct KeyFunction {
+    size_t operator()(const TValue& k) const {
+        return keyhash(k);
+    }
+};
+
+
+struct Table : GCObject {
+    Table* metatable;
+    std::vector<TValue>* array;
+    std::unordered_map<const TValue, TValue, KeyFunction>* node;
+};
+
 
 struct ClosureHeader : GCObject {
     lu_byte isC;
@@ -35,18 +84,7 @@ struct ClosureHeader : GCObject {
     Table* env;
 };
 
-union Value {
-    GCObject* gc;
-    void* p;
-    lua_Number n;
-    int b;
-};
 
-struct TValue
-{
-    Value value;
-    int tt;
-};
 
 struct Proto : GCObject {
     TValue* k;  /* constants used by the function */
@@ -79,12 +117,25 @@ inline void _setpvalue(TValue* obj, void* x) {
     obj->tt = LUA_TLIGHTUSERDATA;
 }
 
-inline void _sethvalue(TValue* obj, GCObject* x) {
+inline void _setsvalue(TValue* obj, TString* x) {
+    obj->value.gc = &x->tsv;
+    obj->tt = LUA_TSTRING;
+}
+
+inline void _sethvalue(TValue* obj, Table* x) {
     obj->value.gc = x;
     obj->tt = LUA_TTABLE;
 }
 
-inline void _setclvalue(TValue* obj, GCObject* x) {
-    obj->value.gc = x;
+inline void _setclvalue(TValue* obj, Closure* x) {
+    obj->value.gc = &x->c;
     obj->tt = LUA_TFUNCTION;
 }
+
+inline void _setobj(TValue* desc, const TValue* src) {
+    desc->value = src->value;
+    desc->tt = src->tt;
+}
+
+const TValue luaO_nilobject_;
+#define luaO_nilobject (&luaO_nilobject_)

@@ -139,6 +139,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\tbaselib.cpp" />
+    <ClCompile Include="src\tinit.cpp" />
     <ClCompile Include="src\tapi.cpp" />
     <ClCompile Include="src\tauxlib.cpp" />
     <ClCompile Include="src\tdo.cpp" />
@@ -151,8 +153,10 @@
     <ClCompile Include="src\ttable.cpp" />
     <ClCompile Include="src\ttm.cpp" />
     <ClCompile Include="src\lua.cpp" />
+    <ClCompile Include="src\tvm.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\lualib.h" />
     <ClInclude Include="src\tauxlib.h" />
     <ClInclude Include="src\tdo.h" />
     <ClInclude Include="src\tfunc.h" />
@@ -165,6 +169,7 @@
     <ClInclude Include="src\ttable.h" />
     <ClInclude Include="src\ttm.h" />
     <ClInclude Include="src\lua.h" />
+    <ClInclude Include="src\tvm.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
