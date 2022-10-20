@@ -1,7 +1,7 @@
 #include "tgc.h"
 #include "tstate.h"
 
-void luaC_link(lua_State* L, GCObject* o, lu_byte tt) {
+void luaC_link(lua_State* L, GCheader* o, lu_byte tt) {
     global_State* g = _G(L);
 
     g->rootgc.push_back(o);

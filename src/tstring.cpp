@@ -32,7 +32,7 @@ TString* newlstr(lua_State* L, const char* str, size_t l) {
 }
 
 TString* luaS_newlstr(lua_State* L, const char* str, size_t l) {
-    GCObject* o = _G(L)->strt.hash[str];
+    GCheader* o = _G(L)->strt.hash[str];
     if (o) {
         return (TString*)o;
     }

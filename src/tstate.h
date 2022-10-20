@@ -22,7 +22,7 @@ struct CallInfo
 
 struct stringtable {
     // TODO
-    std::unordered_map<std::string, GCObject*> hash;
+    std::unordered_map<std::string, GCheader*> hash;
     lu_int32 nuse;
 };
 
@@ -30,13 +30,13 @@ struct global_State
 {
     stringtable strt;
     lu_byte currentwhite;
-    std::list<GCObject*> rootgc;
+    std::list<GCheader*> rootgc;
     lu_mem GCthreshold;
     TValue l_registry;
     TString* tmname[TM_N];  /* array with tag-method names */
 };
 
-struct lua_State : GCObject
+struct lua_State : GCheader
 {
     TValue* top;
     TValue* base;
@@ -50,6 +50,16 @@ struct lua_State : GCObject
     unsigned short nCcalls;
 
     TValue l_gt;  /* table of globals */
+};
+
+
+union GCObject {
+	GCheader gch;
+	TString ts;
+	Closure cl;
+	Table h;
+	Proto p;
+	// lua_State th;  /* thread */
 };
 
 inline TValue* _gt(lua_State* L) {

@@ -1,8 +1,11 @@
 #pragma once
 
 #include "tobject.h"
+#include "tzio.h"
 
 #define FIRST_RESERVED	257
+
+struct FuncState;
 
 enum RESERVED {
     /* terminal symbols denoted by reserved words */
@@ -43,4 +46,15 @@ enum RESERVED {
 /* number of reserved words */
 #define NUM_RESERVED	(TK_WHILE - FIRST_RESERVED + 1)
 
+struct LexState {
+    int current;
+    int linenumber;
+    FuncState* fs;
+    lua_State* L;
+    ZIO* z;
+    std::string buff;
+    TString* source;
+};
+
 void luaX_init(lua_State* L);
+void luaX_setinput(lua_State* L, LexState* ls, ZIO* z, TString* source);

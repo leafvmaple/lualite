@@ -11,8 +11,9 @@
 typedef double lua_Number;
 
 struct TValue;
+union GCObject;
 
-struct GCObject {
+struct GCheader {
     // GCObject* next;
     lu_byte tt;
     lu_byte marked;
@@ -35,7 +36,7 @@ struct TValue
 
 union TString {
 	L_Umaxalign dummy;  /* ensures maximum alignment for strings */
-	struct : GCObject {
+	struct : GCheader {
 		lu_byte reserved;      // 字符串为系统保留标识符时，这里不为0
 		unsigned int hash;
 		size_t len;
@@ -70,33 +71,33 @@ struct KeyFunction {
 };
 
 
-struct Table : GCObject {
+struct Table : GCheader {
     Table* metatable;
     std::vector<TValue>* array;
     std::unordered_map<const TValue, TValue, KeyFunction>* node;
 };
 
 
-struct ClosureHeader : GCObject {
+struct ClosureHeader : GCheader {
     lu_byte isC;
     lu_byte nupvalues;
     GCObject* gclist;
     Table* env;
 };
 
-
-
-struct Proto : GCObject {
+struct Proto : GCheader {
     TValue* k;  /* constants used by the function */
-    // Instruction* code;
+    Instruction* code;
     struct Proto** p;  /* functions defined inside the function */
 };
 
+// C函数中的指令和数据都在代码段数据段中，只需要一个函数指针入口即可
 struct CClosure : ClosureHeader {
     lua_CFunction f;    // 函数指针
     TValue upvalue[0];
 };
 
+// Lua函数的指令，数据需要自行管理，因此需要一个Proto来存储
 struct LClosure : ClosureHeader {
     Proto* p;    // 函数原型
     // UpVal* upvals[1];
@@ -108,32 +109,32 @@ union Closure {
     LClosure l;
 };
 
-inline void _setnilvalue(TValue* obj) {
+inline void setnilvalue(TValue* obj) {
     obj->tt = LUA_TNIL;
 }
 
-inline void _setpvalue(TValue* obj, void* x) {
+inline void setpvalue(TValue* obj, void* x) {
     obj->value.p = x;
     obj->tt = LUA_TLIGHTUSERDATA;
 }
 
-inline void _setsvalue(TValue* obj, TString* x) {
-    obj->value.gc = &x->tsv;
+inline void setsvalue(TValue* obj, TString* x) {
+    obj->value.gc = (GCObject*)x;
     obj->tt = LUA_TSTRING;
 }
 
-inline void _sethvalue(TValue* obj, Table* x) {
-    obj->value.gc = x;
+inline void sethvalue(TValue* obj, Table* x) {
+    obj->value.gc = (GCObject*)x;
     obj->tt = LUA_TTABLE;
 }
 
-inline void _setclvalue(TValue* obj, Closure* x) {
-    obj->value.gc = &x->c;
+inline void setclvalue(TValue* obj, Closure* x) {
+    obj->value.gc = (GCObject*)x;
     obj->tt = LUA_TFUNCTION;
 }
 
-inline void _setobj(TValue* desc, const TValue* src) {
-    desc->value = src->value;
+inline void setobj(TValue* desc, const TValue* src) {
+    desc->value.gc = src->value.gc;
     desc->tt = src->tt;
 }
 

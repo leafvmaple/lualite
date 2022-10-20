@@ -12,7 +12,7 @@ struct LG {
 void preinit_state(lua_State* L, global_State* g) {
     _G(L) = g;
     L->nCcalls = 0;
-    _setnilvalue(_gt(L));
+    setnilvalue(_gt(L));
 }
 
 void stack_init(lua_State* L) {
@@ -22,7 +22,7 @@ void stack_init(lua_State* L) {
     L->stack.resize(BASIC_STACK_SIZE + EXTRA_STACK);
 
     L->ci->func = &L->stack.front();
-    _setnilvalue(L->ci->func);
+    setnilvalue(L->ci->func);
     L->ci->base = L->ci->func + 1;
     L->ci->top = L->ci->base + LUA_MINSTACK;
 
@@ -33,8 +33,8 @@ void stack_init(lua_State* L) {
 void f_luaopen(lua_State* L) {
     stack_init(L);
 
-    _sethvalue(_gt(L), luaH_new(L, 0, 2));
-    _sethvalue(_registry(L), luaH_new(L, 0, 2));
+    sethvalue(_gt(L), luaH_new(L, 0, 2));
+    sethvalue(_registry(L), luaH_new(L, 0, 2));
 
     luaS_resize(L, MINSTRTABSIZE);
 

@@ -28,11 +28,12 @@ TValue* newkey(lua_State* L, Table* t, const TValue* key) {
 }
 
 const TValue* luaH_getstr(Table* t, TString* key) {
-    TValue* o = (TValue*)key;
-    auto it = t->node->find(*o);
+    TValue o;
+    setsvalue(&o, key);
+    auto it = t->node->find(o);
     if (it != t->node->end())
         return &(*it).first;
-    return nullptr;
+    return luaO_nilobject;
 }
 
 const TValue* luaH_get(Table* t, const TValue* key) {
@@ -44,7 +45,7 @@ const TValue* luaH_get(Table* t, const TValue* key) {
 
 TValue* luaH_set(lua_State* L, Table* t, const TValue* key) {
     const TValue* p = luaH_get(t, key);
-    if (p)
+    if (p != luaO_nilobject)
         return (TValue*) p;
     return newkey(L, t, key);
 }

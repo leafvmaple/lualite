@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -139,6 +139,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\tparser.cpp" />
+    <ClCompile Include="src\tzio.cpp" />
     <ClCompile Include="src\tbaselib.cpp" />
     <ClCompile Include="src\tinit.cpp" />
     <ClCompile Include="src\tapi.cpp" />
@@ -164,12 +166,14 @@
     <ClInclude Include="src\tlex.h" />
     <ClInclude Include="src\tlimits.h" />
     <ClInclude Include="src\tobject.h" />
+    <ClInclude Include="src\tparser.h" />
     <ClInclude Include="src\tstate.h" />
     <ClInclude Include="src\tstring.h" />
     <ClInclude Include="src\ttable.h" />
     <ClInclude Include="src\ttm.h" />
     <ClInclude Include="src\lua.h" />
     <ClInclude Include="src\tvm.h" />
+    <ClInclude Include="src\tzio.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

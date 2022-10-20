@@ -13,6 +13,8 @@ typedef size_t lu_mem;
 #define MINSTRTABSIZE	32
 #endif
 
+typedef lu_int32 Instruction;
+
 union L_Umaxalign {
     double u;
     void* s;
