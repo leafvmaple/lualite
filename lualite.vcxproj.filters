@@ -60,6 +60,12 @@
     <ClCompile Include="src\tvm.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\tparser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tzio.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\tauxlib.h">
@@ -102,6 +108,12 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="src\tvm.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\tparser.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\tzio.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

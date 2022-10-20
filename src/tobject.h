@@ -8,6 +8,14 @@
 #include "lua.h"
 #include "tlimits.h"
 
+#define LAST_TAG        LUA_TTHREAD
+
+#define NUM_TAGS        (LAST_TAG + 1)
+
+#define LUA_TPROTO      (LAST_TAG + 1)
+#define LUA_TUPVAL      (LAST_TAG + 2)
+#define LUA_TDEADKEY    (LAST_TAG + 3)
+
 typedef double lua_Number;
 
 struct TValue;
@@ -20,28 +28,28 @@ struct GCheader {
 };
 
 union Value {
-	GCObject* gc;
-	void* p;
-	lua_Number n;
-	int b;
+    GCObject* gc;
+    void* p;
+    lua_Number n;
+    int b;
 };
 
 struct TValue
 {
-	Value value;
-	int tt;
+    Value value;
+    int tt;
 
     bool operator==(const TValue& k) const;
 };
 
 union TString {
-	L_Umaxalign dummy;  /* ensures maximum alignment for strings */
-	struct : GCheader {
-		lu_byte reserved;      // 字符串为系统保留标识符时，这里不为0
-		unsigned int hash;
-		size_t len;
+    L_Umaxalign dummy;  /* ensures maximum alignment for strings */
+    struct : GCheader {
+        lu_byte reserved;      // 字符串为系统保留标识符时，这里不为0
+        unsigned int hash;
+        size_t len;
         char s[0];
-	} tsv;
+    } tsv;
 
 };
 
@@ -50,18 +58,18 @@ inline size_t keyhash(const TValue& k) {
     {
     case LUA_TSTRING:
     {
-		TString* s = (TString*)k.value.gc;
-		return std::hash<const char*>{}(s->tsv.s);
+        TString* s = (TString*)k.value.gc;
+        return std::hash<const char*>{}(s->tsv.s);
     }
     default:
     {
-		return 0;
+        return 0;
     }
     }
 }
 
 inline bool TValue::operator==(const TValue& k) const {
-	return keyhash(*this) == keyhash(k);
+    return keyhash(*this) == keyhash(k);
 }
 
 struct KeyFunction {
@@ -86,9 +94,9 @@ struct ClosureHeader : GCheader {
 };
 
 struct Proto : GCheader {
-    TValue* k;  /* constants used by the function */
+    TValue* k;  /* 被该函数引用到的常量 */
     Instruction* code;
-    struct Proto** p;  /* functions defined inside the function */
+    struct Proto** p;  /* 函数内嵌套函数 */
 };
 
 // C函数中的指令和数据都在代码段数据段中，只需要一个函数指针入口即可
@@ -113,24 +121,29 @@ inline void setnilvalue(TValue* obj) {
     obj->tt = LUA_TNIL;
 }
 
-inline void setpvalue(TValue* obj, void* x) {
-    obj->value.p = x;
+inline void setpvalue(TValue* obj, void* p) {
+    obj->value.p = p;
     obj->tt = LUA_TLIGHTUSERDATA;
 }
 
-inline void setsvalue(TValue* obj, TString* x) {
-    obj->value.gc = (GCObject*)x;
+inline void setsvalue(TValue* obj, TString* s) {
+    obj->value.gc = (GCObject*)s;
     obj->tt = LUA_TSTRING;
 }
 
-inline void sethvalue(TValue* obj, Table* x) {
-    obj->value.gc = (GCObject*)x;
+inline void sethvalue(TValue* obj, Table* h) {
+    obj->value.gc = (GCObject*)h;
     obj->tt = LUA_TTABLE;
 }
 
-inline void setclvalue(TValue* obj, Closure* x) {
-    obj->value.gc = (GCObject*)x;
+inline void setclvalue(TValue* obj, Closure* cl) {
+    obj->value.gc = (GCObject*)cl;
     obj->tt = LUA_TFUNCTION;
+}
+
+inline void setptvalue(TValue* obj, Proto* pt) {
+    obj->value.gc = (GCObject*)pt;
+    obj->tt = LUA_TPROTO;
 }
 
 inline void setobj(TValue* desc, const TValue* src) {
