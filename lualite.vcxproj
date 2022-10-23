@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\tcode.cpp" />
     <ClCompile Include="src\tparser.cpp" />
     <ClCompile Include="src\tzio.cpp" />
     <ClCompile Include="src\tbaselib.cpp" />
@@ -160,6 +161,7 @@
   <ItemGroup>
     <ClInclude Include="src\lualib.h" />
     <ClInclude Include="src\tauxlib.h" />
+    <ClInclude Include="src\tcode.h" />
     <ClInclude Include="src\tdo.h" />
     <ClInclude Include="src\tfunc.h" />
     <ClInclude Include="src\tgc.h" />

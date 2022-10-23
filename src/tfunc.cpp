@@ -4,7 +4,7 @@
 Proto* luaF_newproto(lua_State* L) {
     Proto* p = new Proto;
     luaC_link(L, p, LUA_TPROTO);
-    p->k = nullptr;
+    p->k = new std::vector<TValue *>;
     p->code = nullptr;
     p->p = nullptr;
     return p;

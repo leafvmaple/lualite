@@ -46,9 +46,21 @@ enum RESERVED {
 /* number of reserved words */
 #define NUM_RESERVED	(TK_WHILE - FIRST_RESERVED + 1)
 
+union SemInfo {
+    lua_Number r;
+    TString* ts;
+};
+
+struct Token {
+    int token;
+    SemInfo seminfo;
+};
+
 struct LexState {
     int current;
     int linenumber;
+    int lastline;
+    Token t;            // µ±Ç°Token
     FuncState* fs;
     lua_State* L;
     ZIO* z;
@@ -57,4 +69,6 @@ struct LexState {
 };
 
 void luaX_init(lua_State* L);
+TString* luaX_newstring(LexState* ls, const char* str, size_t l);
 void luaX_setinput(lua_State* L, LexState* ls, ZIO* z, TString* source);
+void luaX_next(LexState* ls);

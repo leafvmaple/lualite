@@ -94,7 +94,7 @@ struct ClosureHeader : GCheader {
 };
 
 struct Proto : GCheader {
-    TValue* k;  /* 被该函数引用到的常量 */
+    std::vector<TValue*>* k; /* 被该函数引用到的常量 */
     Instruction* code;
     struct Proto** p;  /* 函数内嵌套函数 */
 };
@@ -117,8 +117,15 @@ union Closure {
     LClosure l;
 };
 
+bool ttisnumber(TValue* obj);
+
 inline void setnilvalue(TValue* obj) {
     obj->tt = LUA_TNIL;
+}
+
+inline void setnvalue(TValue* obj, const lua_Number n) {
+    obj->value.n = n;
+    obj->tt = LUA_TNUMBER;
 }
 
 inline void setpvalue(TValue* obj, void* p) {
@@ -126,22 +133,27 @@ inline void setpvalue(TValue* obj, void* p) {
     obj->tt = LUA_TLIGHTUSERDATA;
 }
 
-inline void setsvalue(TValue* obj, TString* s) {
+inline void setbvalue(TValue* obj, const bool b) {
+    obj->value.b = b;
+    obj->tt = LUA_TBOOLEAN;
+}
+
+inline void setsvalue(TValue* obj, const TString* s) {
     obj->value.gc = (GCObject*)s;
     obj->tt = LUA_TSTRING;
 }
 
-inline void sethvalue(TValue* obj, Table* h) {
+inline void sethvalue(TValue* obj, const Table* h) {
     obj->value.gc = (GCObject*)h;
     obj->tt = LUA_TTABLE;
 }
 
-inline void setclvalue(TValue* obj, Closure* cl) {
+inline void setclvalue(TValue* obj, const Closure* cl) {
     obj->value.gc = (GCObject*)cl;
     obj->tt = LUA_TFUNCTION;
 }
 
-inline void setptvalue(TValue* obj, Proto* pt) {
+inline void setptvalue(TValue* obj, const Proto* pt) {
     obj->value.gc = (GCObject*)pt;
     obj->tt = LUA_TPROTO;
 }
