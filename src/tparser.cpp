@@ -12,6 +12,7 @@ static void open_func(LexState* ls, FuncState* fs) {
     fs->h = luaH_new(L, 0, 0);
     fs->prev = ls->fs;
     fs->ls = ls;
+    fs->pc = 0;
     fs->nk = 0;
     ls->fs = fs;
 
@@ -48,22 +49,76 @@ static void init_exp(expdesc* e, expkind k, int i) {
     e->u.s.info = i;
 }
 
+static void codestring(LexState* ls, expdesc* e, TString* s) {
+	init_exp(e, VK, luaK_stringK(ls->fs, s));
+}
+
+static void simpleexp(LexState* ls, expdesc* v) {
+    switch (ls->t.token)
+    {
+    case TK_STRING: {
+        codestring(ls, v, ls->t.seminfo.ts);
+        break;
+    }
+    default:
+        break;
+    }
+    luaX_next(ls);
+}
+
+static BinOpr subexpr(LexState* ls, expdesc* v, unsigned int limit) {
+    BinOpr op;
+
+    ls->L->nCcalls++;
+    simpleexp(ls, v);
+    ls->L->nCcalls--;
+}
+
+static void expr(LexState* ls, expdesc* v) {
+	subexpr(ls, v, 0);
+}
+
+static int testnext(LexState* ls, int c) {
+	if (ls->t.token == c) {
+		luaX_next(ls);
+		return 1;
+	}
+	return 0;
+}
+
+static int explist1(LexState* ls, expdesc* v) {
+    int n = 1;
+    expr(ls, v);
+    while (testnext(ls, ',')) {
+        n++;
+    }
+}
+
 static void funcargs(LexState* ls, expdesc* f) {
+    int base = 0;
+    int nparams = 0;
+    expdesc args;
+
     switch (ls->t.token) {
     case '(': {
         luaX_next(ls);
+		if (ls->t.token == ')')  /* arg list is empty? */
+			args.k = VVOID;
+		else
+			explist1(ls, &args);
         break;
     }
     default: {
         break;
     }
     }
-    init_exp(f, VCALL, 0);
+    base = f->u.s.info;
+    init_exp(f, VCALL, luaK_codeABC(ls->fs, OP_CALL, base, nparams + 1, 2));
 }
 
 static int singlevaraux(FuncState* fs, TString* n, expdesc* var, int base) {
     if (fs == nullptr) {
-        init_exp(var, VGLOBAL, 0);
+        init_exp(var, VGLOBAL, NO_REG);
         return VGLOBAL;
     }
     if (singlevaraux(fs->prev, n, var, 0) == VGLOBAL)

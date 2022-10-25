@@ -29,7 +29,8 @@ struct FuncState {
 	FuncState* prev;
     lua_State* L;
 	LexState* ls;
-    int nk = 0;
+    int pc;
+    int nk;
 };
 
 struct expdesc {

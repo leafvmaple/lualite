@@ -60,6 +60,7 @@ lua_State* lua_newstate() {
 
     preinit_state(L, g);
     g->strt.nuse = 0;
+    g->rootgc.push_back(L);
 
     f_luaopen(L);
 

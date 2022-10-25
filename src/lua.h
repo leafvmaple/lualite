@@ -23,14 +23,14 @@ struct lua_State;
 typedef int (*lua_CFunction) (lua_State* L);
 typedef const char* (*lua_Reader) (lua_State* L, void* ud, size_t* sz);
 
+lua_State* lua_newstate();
+
 void lua_pushnil(lua_State* L);
 void lua_pushlstring(lua_State* L, const char* s, size_t l);
 void lua_pushstring(lua_State* L, const char* s);
 void lua_pushvalue(lua_State* L, int idx);
 void lua_pushcclosure(lua_State* L, lua_CFunction fn, int n);
-inline void lua_pushcfunction(lua_State* L, lua_CFunction f) {
-	lua_pushcclosure(L, f, 0);
-}
+void lua_pushcfunction(lua_State* L, lua_CFunction f);
 
 void* lua_touserdata(lua_State* L, int idx);
 
@@ -39,15 +39,13 @@ void lua_getfield(lua_State* L, int idx, const char* k);
 
 void lua_settable(lua_State* L, int idx);
 void lua_setfield(lua_State* L, int idx, const char* k);
-inline void lua_setglobal(lua_State* L, const char* s) { lua_setfield(L, LUA_GLOBALSINDEX, s); }
+void lua_setglobal(lua_State* L, const char* s);
 
 void lua_createtable(lua_State* L, int narr, int nrec);
 
 void lua_settop(lua_State* L, int idx);
 void lua_pop(lua_State* L, int n);
 void lua_remove(lua_State* L, int idx);
-
-int lua_strlen(lua_State* L, int idx);
 
 bool lua_isnil(lua_State* L, int idx);
 bool lua_istable(lua_State* L, int idx);

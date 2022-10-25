@@ -76,6 +76,10 @@ void lua_pushcclosure(lua_State* L, lua_CFunction fn, int n) {
     L->top++;
 }
 
+void lua_pushcfunction(lua_State* L, lua_CFunction f) {
+	lua_pushcclosure(L, f, 0);
+}
+
 void lua_settable(lua_State* L, int idx) {
     TValue* t = index2adr(L, idx);
     luaV_settable(L, t, L->top - 2, L->top - 2);
@@ -89,6 +93,10 @@ void lua_setfield(lua_State* L, int idx, const char* k) {
     setsvalue(&key, luaS_new(L, k));
     luaV_settable(L, t, &key, L->top - 1);
     L->top--;
+}
+
+void lua_setglobal(lua_State* L, const char* s) {
+    lua_setfield(L, LUA_GLOBALSINDEX, s);
 }
 
 void lua_createtable(lua_State* L, int narr, int nrec) {

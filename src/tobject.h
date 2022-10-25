@@ -50,7 +50,6 @@ union TString {
         size_t len;
         char s[0];
     } tsv;
-
 };
 
 inline size_t keyhash(const TValue& k) {
@@ -95,7 +94,8 @@ struct ClosureHeader : GCheader {
 
 struct Proto : GCheader {
     std::vector<TValue*>* k; /* 被该函数引用到的常量 */
-    Instruction* code;
+    std::vector<Instruction>* code;
+    std::vector<int>* lineinfo;
     struct Proto** p;  /* 函数内嵌套函数 */
 };
 
@@ -111,7 +111,6 @@ struct LClosure : ClosureHeader {
     // UpVal* upvals[1];
 };
 
-
 union Closure {
     CClosure c;
     LClosure l;
@@ -119,49 +118,15 @@ union Closure {
 
 bool ttisnumber(TValue* obj);
 
-inline void setnilvalue(TValue* obj) {
-    obj->tt = LUA_TNIL;
-}
-
-inline void setnvalue(TValue* obj, const lua_Number n) {
-    obj->value.n = n;
-    obj->tt = LUA_TNUMBER;
-}
-
-inline void setpvalue(TValue* obj, void* p) {
-    obj->value.p = p;
-    obj->tt = LUA_TLIGHTUSERDATA;
-}
-
-inline void setbvalue(TValue* obj, const bool b) {
-    obj->value.b = b;
-    obj->tt = LUA_TBOOLEAN;
-}
-
-inline void setsvalue(TValue* obj, const TString* s) {
-    obj->value.gc = (GCObject*)s;
-    obj->tt = LUA_TSTRING;
-}
-
-inline void sethvalue(TValue* obj, const Table* h) {
-    obj->value.gc = (GCObject*)h;
-    obj->tt = LUA_TTABLE;
-}
-
-inline void setclvalue(TValue* obj, const Closure* cl) {
-    obj->value.gc = (GCObject*)cl;
-    obj->tt = LUA_TFUNCTION;
-}
-
-inline void setptvalue(TValue* obj, const Proto* pt) {
-    obj->value.gc = (GCObject*)pt;
-    obj->tt = LUA_TPROTO;
-}
-
-inline void setobj(TValue* desc, const TValue* src) {
-    desc->value.gc = src->value.gc;
-    desc->tt = src->tt;
-}
+void setnilvalue(TValue* obj);
+void setnvalue(TValue* obj, const lua_Number n);
+void setpvalue(TValue* obj, void* p);
+void setbvalue(TValue* obj, const bool b);
+void setsvalue(TValue* obj, const TString* s);
+void sethvalue(TValue* obj, const Table* h);
+void setclvalue(TValue* obj, const Closure* cl);
+void setptvalue(TValue* obj, const Proto* pt);
+void setobj(TValue* desc, const TValue* src);
 
 const TValue luaO_nilobject_;
 #define luaO_nilobject (&luaO_nilobject_)

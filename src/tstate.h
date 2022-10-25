@@ -74,6 +74,4 @@ inline TValue* _registry(lua_State* L) {
     return &_G(L)->l_registry;
 }
 
-lua_State* lua_newstate();
-
 void f_luaopen(lua_State* L);
