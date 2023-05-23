@@ -3,6 +3,8 @@
 #include "tobject.h"
 #include "tgc.h"
 
+// Table Ïà¹Ø
+
 void setarrayvector(lua_State* L, Table* t, int size) {
     t->array = new std::vector<TValue>;
     t->array->resize(size);

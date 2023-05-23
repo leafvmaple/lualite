@@ -57,15 +57,15 @@ struct Token {
 };
 
 struct LexState {
-    int current;
-    int linenumber;
-    int lastline;
+    int current = 0;
+    int linenumber = 1;
+    int lastline = 1;
     Token t;            // µ±Ç°Token
-    FuncState* fs;
-    lua_State* L;
-    ZIO* z;
+    FuncState* fs = nullptr;
+    lua_State* L = nullptr;
+    ZIO* z = nullptr;
     std::string buff;
-    TString* source;
+    TString* source = nullptr;
 };
 
 void luaX_init(lua_State* L);

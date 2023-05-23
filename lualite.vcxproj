@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\lopcodes.cpp" />
     <ClCompile Include="src\tcode.cpp" />
     <ClCompile Include="src\tparser.cpp" />
     <ClCompile Include="src\tzio.cpp" />
@@ -159,6 +160,7 @@
     <ClCompile Include="src\tvm.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\lopcodes.h" />
     <ClInclude Include="src\lualib.h" />
     <ClInclude Include="src\tauxlib.h" />
     <ClInclude Include="src\tcode.h" />

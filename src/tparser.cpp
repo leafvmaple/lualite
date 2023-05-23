@@ -22,6 +22,7 @@ static void open_func(LexState* ls, FuncState* fs) {
 
 static void chunk(LexState* ls);
 
+// 将文件解析为一个Proto
 Proto* luaY_parser(lua_State* L, ZIO* z, const char* name) {
     LexState ls;
     FuncState fs;
@@ -50,7 +51,7 @@ static void init_exp(expdesc* e, expkind k, int i) {
 }
 
 static void codestring(LexState* ls, expdesc* e, TString* s) {
-	init_exp(e, VK, luaK_stringK(ls->fs, s));
+    init_exp(e, VK, luaK_stringK(ls->fs, s));
 }
 
 static void simpleexp(LexState* ls, expdesc* v) {
@@ -67,23 +68,25 @@ static void simpleexp(LexState* ls, expdesc* v) {
 }
 
 static BinOpr subexpr(LexState* ls, expdesc* v, unsigned int limit) {
-    BinOpr op;
+    BinOpr op = OPR_ADD;
 
     ls->L->nCcalls++;
     simpleexp(ls, v);
     ls->L->nCcalls--;
+
+    return op;
 }
 
 static void expr(LexState* ls, expdesc* v) {
-	subexpr(ls, v, 0);
+    subexpr(ls, v, 0);
 }
 
 static int testnext(LexState* ls, int c) {
-	if (ls->t.token == c) {
-		luaX_next(ls);
-		return 1;
-	}
-	return 0;
+    if (ls->t.token == c) {
+        luaX_next(ls);
+        return 1;
+    }
+    return 0;
 }
 
 static int explist1(LexState* ls, expdesc* v) {
@@ -92,6 +95,8 @@ static int explist1(LexState* ls, expdesc* v) {
     while (testnext(ls, ',')) {
         n++;
     }
+
+    return 0;
 }
 
 static void funcargs(LexState* ls, expdesc* f) {
@@ -99,13 +104,13 @@ static void funcargs(LexState* ls, expdesc* f) {
     int nparams = 0;
     expdesc args;
 
-    switch (ls->t.token) {
+    switch (ls->t.token) { 
     case '(': {
         luaX_next(ls);
-		if (ls->t.token == ')')  /* arg list is empty? */
-			args.k = VVOID;
-		else
-			explist1(ls, &args);
+        if (ls->t.token == ')')  /* arg list is empty? */
+            args.k = VVOID;
+        else
+            explist1(ls, &args);
         break;
     }
     default: {

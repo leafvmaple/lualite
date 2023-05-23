@@ -4,7 +4,7 @@
 #include "luaconf.h"
 
 const char* get_prompt(lua_State* L, int firstline) {
-	return firstline ? LUA_PROMPT : LUA_PROMPT2;
+    return firstline ? LUA_PROMPT : LUA_PROMPT2;
 }
 
 int pushline(lua_State* L, int firstline) {

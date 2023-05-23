@@ -2,7 +2,8 @@
 #include "tdo.h"
 #include "tparser.h"
 
-
+// | ci->func | ci->base | ... |        | LUA_MINSTACK - 1 .. | ci->top |
+// |          | L->base  | ... | L->top |
 int luaD_precall(lua_State* L, TValue* func, int nresults) {
     CClosure* cl = nullptr;
     CallInfo* ci = nullptr;

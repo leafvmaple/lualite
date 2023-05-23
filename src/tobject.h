@@ -28,7 +28,7 @@ struct GCheader {
 };
 
 union Value {
-    GCObject* gc;
+    GCObject* gc;  // 非内置类型，只存指针，需要GC
     void* p;
     lua_Number n;
     int b;

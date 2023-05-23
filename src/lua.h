@@ -51,9 +51,9 @@ bool lua_isnil(lua_State* L, int idx);
 bool lua_istable(lua_State* L, int idx);
 int  lua_type(lua_State* L, int idx);
 
-void lua_call(lua_State* L, int nargs, int nresults);
-int  lua_cpcall(lua_State* L, lua_CFunction func, void* ud);
-int  lua_load(lua_State* L, lua_Reader reader, void* dt, const char* chunkname);
+void lua_call(lua_State* L, int nargs, int nresults);        // 调用一个Lua函数
+int  lua_cpcall(lua_State* L, lua_CFunction func, void* ud); // 调用一个C函数
+int  lua_load(lua_State* L, lua_Reader reader, void* dt, const char* chunkname); // 加载代码
 
 const char* lua_tolstring(lua_State* L, int idx, size_t* len);
 const char* lua_tostring(lua_State* L, int idx);

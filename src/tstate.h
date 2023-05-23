@@ -54,18 +54,20 @@ struct lua_State : GCheader
 
 
 union GCObject {
-	GCheader gch;
-	TString ts;
-	Closure cl;
-	Table h;
-	Proto p;
-	// lua_State th;  /* thread */
+    GCheader gch;
+    TString ts;
+    Closure cl;
+    Table h;
+    Proto p;
+    // lua_State th;  /* thread */
 };
 
+// 获取全局变量表
 inline TValue* _gt(lua_State* L) {
     return &L->l_gt;
 }
 
+// 获取全局状态机
 inline global_State* &_G(lua_State* L) {
     return L->l_G;
 }

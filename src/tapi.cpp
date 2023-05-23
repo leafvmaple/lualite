@@ -26,11 +26,15 @@ TValue* index2adr(lua_State* L, int idx) {
     }
 }
 
+// 获取当前所在环境表
 Table* getcurrenv(lua_State* L) {
     if (L->ci == &L->base_ci.front())
         return (Table*)_gt(L)->value.gc;
 }
 
+// 将C函数压栈并调用
+// |         |           |
+// | Closure | UsderData | L->top
 static void f_Ccall(lua_State* L, CCallS* c) {
     Closure* cl;
     cl = luaF_newCclosure(L, 0, getcurrenv(L));
@@ -77,7 +81,7 @@ void lua_pushcclosure(lua_State* L, lua_CFunction fn, int n) {
 }
 
 void lua_pushcfunction(lua_State* L, lua_CFunction f) {
-	lua_pushcclosure(L, f, 0);
+    lua_pushcclosure(L, f, 0);
 }
 
 void lua_settable(lua_State* L, int idx) {
@@ -172,15 +176,15 @@ int lua_cpcall(lua_State* L, lua_CFunction func, void* ud) {
 
     f_Ccall(L, &c);
 
-	// return luaD_pcall(L, f_Ccall, &c, _savestack(L, L->top));
+    // return luaD_pcall(L, f_Ccall, &c, _savestack(L, L->top));
     return 1;
 
 }
 
 int lua_load(lua_State* L, lua_Reader reader, void* data, const char* chunkname) {
-	ZIO z;
-	luaZ_init(L, &z, reader, data);
-	return  luaD_protectedparser(L, &z, chunkname);
+    ZIO z;
+    luaZ_init(L, &z, reader, data);
+    return luaD_protectedparser(L, &z, chunkname);
 }
 
 const char* lua_tolstring(lua_State* L, int idx, size_t* len){

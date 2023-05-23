@@ -64,11 +64,7 @@ TString* luaX_newstring(LexState* ls, const char* str, size_t l) {
 void luaX_setinput(lua_State* L, LexState* ls, ZIO* z, TString* source) {
     ls->L = L;
     ls->z = z;
-    ls->fs = nullptr;
-	ls->linenumber = 1;
-    ls->lastline = 1;
     ls->source = source;
-    ls->buff.clear();
     next(ls);
 }
 
