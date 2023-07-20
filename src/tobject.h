@@ -25,30 +25,47 @@ struct GCheader {
     // GCObject* next;
     lu_byte tt;
     lu_byte marked;
+
+    ~GCheader() {}
 };
 
 union Value {
-    GCObject* gc;  // 非内置类型，只存指针，需要GC
+    GCObject* gc = nullptr;  // 非内置类型，只存指针，需要GC
     void* p;
     lua_Number n;
     int b;
 };
 
 struct TValue {
+#ifdef _DEBUG
+    std::string name;
+#endif
     Value value;
-    int tt;
+    int tt = 0;
+
+    ~TValue() {}
 
     bool operator==(const TValue& k) const;
 };
 
+#ifdef _DEBUG
+#define SET_DEBUG_NAME(t, s) if (s) {((t->name) = (s));}
+#else
+#define SET_DEBUG_NAME(t, s)
+#endif
+
 union TString {
     L_Umaxalign dummy;  /* ensures maximum alignment for strings */
-    struct : GCheader {
+    struct Genuine : GCheader {
         lu_byte reserved;      // 字符串为系统保留标识符时，这里不为0
         unsigned int hash;
         size_t len;
         char s[0];
+
+        ~Genuine() {}
     } tsv;
+
+    ~TString() {}
 };
 
 inline size_t keyhash(const TValue& k) {
@@ -89,14 +106,18 @@ struct ClosureHeader : GCheader {
 };
 
 struct UpVal : GCheader {
-    TValue* v;  /* points to stack or to its own value */
-    union {
+    TValue* v = nullptr;  /* points to stack or to its own value */
+    union Practical {
         TValue value;  /* the value (when closed) */
         struct {  /* double linked list (when open) */
-            struct UpVal* prev;
-            struct UpVal* next;
+            struct UpVal* prev = 0;
+            struct UpVal* next = 0;
         } l;
+
+        ~Practical() {}
     } u;
+
+    ~UpVal() {}
 };
 
 struct Proto : GCheader {
@@ -121,19 +142,24 @@ struct LClosure : ClosureHeader {
 union Closure {
     CClosure c;
     LClosure l;
+
+    ~Closure() {}
 };
+
+#define _DECL , char const* debug = nullptr
+#define _IMPL , char const* debug
 
 bool ttisnumber(TValue* obj);
 
 void setnilvalue(TValue* obj);
-void setnvalue(TValue* obj, const lua_Number n);
-void setpvalue(TValue* obj, void* p);
-void setbvalue(TValue* obj, const bool b);
-void setsvalue(TValue* obj, const TString* s);
-void sethvalue(TValue* obj, const Table* h);
-void setclvalue(TValue* obj, const Closure* cl);
-void setptvalue(TValue* obj, const Proto* pt);
-void setobj(TValue* desc, const TValue* src);
+void setnvalue(TValue* obj, const lua_Number n _DECL);
+void setpvalue(TValue* obj, void* p _DECL);
+void setbvalue(TValue* obj, const bool b _DECL);
+void setsvalue(TValue* obj, const TString* s _DECL);
+void sethvalue(TValue* obj, const Table* h _DECL);
+void setclvalue(TValue* obj, const Closure* cl _DECL);
+void setptvalue(TValue* obj, const Proto* pt _DECL);
+void setobj(TValue* desc, const TValue* src _DECL);
 
 const TValue luaO_nilobject_;
 #define luaO_nilobject (&luaO_nilobject_)
