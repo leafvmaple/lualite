@@ -11,8 +11,8 @@ void setarrayvector(lua_State* L, Table* t, int size) {
 }
 
 void setnodevector(lua_State* L, Table* t, int size) {
-    t->node = new std::unordered_map<const TValue, TValue, KeyFunction>;
-    t->node->reserve(size);
+    // t->node = new std::unordered_map<const TValue, TValue, KeyFunction>;
+    t->node.reserve(size);
 }
 
 Table* luaH_new(lua_State* L, int narray, int nhash) {
@@ -26,14 +26,14 @@ Table* luaH_new(lua_State* L, int narray, int nhash) {
 }
 
 TValue* newkey(lua_State* L, Table* t, const TValue* key) {
-    return &(*t->node)[*key];
+    return &t->node[*key];
 }
 
 const TValue* luaH_getstr(Table* t, const TString* key) {
     TValue o;
     setsvalue(&o, key);
-    auto it = t->node->find(o);
-    if (it != t->node->end())
+    auto it = t->node.find(o);
+    if (it != t->node.end())
         return &(*it).second;
     return luaO_nilobject;
 }

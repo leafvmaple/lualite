@@ -54,12 +54,14 @@ struct lua_State : GCheader
 
 
 union GCObject {
-    GCheader gch;
+    GCheader gch; // 所有类型都包含GCheader，这里的gch是方便快速索引，减少索引层数
     TString ts;
     Closure cl;
     Table h;
     Proto p;
     // lua_State th;  /* thread */
+
+    ~GCObject() {};
 };
 
 // 获取全局变量表

@@ -26,7 +26,7 @@ enum BinOpr {
 };
 
 inline Instruction* getcode(FuncState* fs, expdesc* e) {
-	return &(*fs->f->code)[e->u.s.info];
+	return &fs->f->code[e->u.s.info];
 }
 
 int luaK_codeABx(FuncState* fs, OpCode o, int A, unsigned int Bx);

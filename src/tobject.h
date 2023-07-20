@@ -34,8 +34,7 @@ union Value {
     int b;
 };
 
-struct TValue
-{
+struct TValue {
     Value value;
     int tt;
 
@@ -53,15 +52,12 @@ union TString {
 };
 
 inline size_t keyhash(const TValue& k) {
-    switch (k.tt)
-    {
-    case LUA_TSTRING:
-    {
+    switch (k.tt) {
+    case LUA_TSTRING: {
         TString* s = (TString*)k.value.gc;
         return std::hash<const char*>{}(s->tsv.s);
     }
-    default:
-    {
+    default: {
         return 0;
     }
     }
@@ -81,7 +77,7 @@ struct KeyFunction {
 struct Table : GCheader {
     Table* metatable;
     std::vector<TValue>* array;
-    std::unordered_map<const TValue, TValue, KeyFunction>* node;
+    std::unordered_map<const TValue, TValue, KeyFunction> node;
 };
 
 
@@ -105,8 +101,8 @@ struct UpVal : GCheader {
 
 struct Proto : GCheader {
     std::vector<TValue>* k; /* 被该函数引用到的常量 */
-    std::vector<Instruction>* code; /* 指令列表 */
-    std::vector<int>* lineinfo; /* 指令列表中每个指令所在的line */
+    std::vector<Instruction> code; /* 指令列表 */
+    std::vector<int> lineinfo; /* 指令列表中每个指令所在的line */
     struct Proto** p;  /* 函数内嵌套函数 */
 };
 

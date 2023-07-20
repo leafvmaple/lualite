@@ -17,8 +17,8 @@ static int addk(FuncState* fs, TValue* k, TValue* v) {
 
 static int luaK_code(FuncState* fs, Instruction i, int line) {
     Proto* f = fs->f;
-    f->code->push_back(i);
-    f->lineinfo->push_back(line);
+    f->code.push_back(i);
+    f->lineinfo.push_back(line);
     return fs->pc++;
 }
 
