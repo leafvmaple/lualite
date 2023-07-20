@@ -5,8 +5,8 @@
 #define EOZ	(-1)			/* end of stream */
 
 struct ZIO {
-    size_t n;
-    const char* p;
+    size_t n = 0;
+    const char* p = nullptr;
     lua_Reader reader;
     void* data;
     lua_State* L;
@@ -14,5 +14,4 @@ struct ZIO {
 
 int zgetc(ZIO* z);
 
-void luaZ_init(lua_State* L, ZIO* z, lua_Reader reader, void* data);
 int luaZ_fill(ZIO* z);

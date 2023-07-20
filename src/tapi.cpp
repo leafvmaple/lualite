@@ -99,10 +99,6 @@ void lua_setfield(lua_State* L, int idx, const char* k) {
     L->top--;
 }
 
-void lua_setglobal(lua_State* L, const char* s) {
-    lua_setfield(L, LUA_GLOBALSINDEX, s);
-}
-
 void lua_createtable(lua_State* L, int narr, int nrec) {
     sethvalue(L->top, luaH_new(L, narr, nrec));
     L->top++;
@@ -130,6 +126,10 @@ void lua_getfield(lua_State* L, int idx, const char* k) {
     setsvalue(&key, luaS_new(L, k));
     luaV_gettable(L, t, &key, L->top);
     L->top++;
+}
+
+void lua_getglobal(lua_State* L, int idx, const char* k) {
+    lua_getfield(L, LUA_GLOBALSINDEX, k);
 }
 
 void lua_settop(lua_State* L, int idx) {
@@ -182,8 +182,7 @@ int lua_cpcall(lua_State* L, lua_CFunction func, void* ud) {
 }
 
 int lua_load(lua_State* L, lua_Reader reader, void* data, const char* chunkname) {
-    ZIO z;
-    luaZ_init(L, &z, reader, data);
+    ZIO z{0, nullptr, reader, data, L};
     return luaD_protectedparser(L, &z, chunkname);
 }
 

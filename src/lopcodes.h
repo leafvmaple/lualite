@@ -19,6 +19,7 @@
 #define MAXARG_B        ((1<<SIZE_B)-1)
 #define MAXARG_C        ((1<<SIZE_C)-1)
 
+// 无效register的值，0x11111111
 #define NO_REG		MAXARG_A
 
 enum OpCode {
@@ -81,4 +82,17 @@ enum OpCode {
 	OP_VARARG/*	A B	R(A), R(A+1), ..., R(A+B-1) = vararg		*/
 };
 
-Instruction CREATE_ABC(Instruction o, Instruction a, Instruction b, Instruction c);
+#define MASK0(n,p)	(~MASK1(n,p))
+#define MASK1(n,p)	((~((~(Instruction)0)<<n))<<p)
+
+inline void SETARG_A(Instruction& i, int u) {
+	i = i & MASK0(SIZE_A, POS_A) | static_cast<Instruction>(u) << POS_A & MASK1(SIZE_A, POS_A);
+}
+
+inline Instruction CREATE_ABC(Instruction o, Instruction a, Instruction b, Instruction c) {
+	return o << POS_OP | a << POS_A | b << POS_B | c << POS_C;
+}
+
+inline Instruction CREATE_ABx(Instruction o, Instruction a, Instruction bc) {
+	return o << POS_OP | a << POS_A | bc << POS_Bx;
+}

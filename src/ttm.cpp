@@ -2,6 +2,7 @@
 #include "tstring.h"
 #include "tstate.h"
 
+// ³õÊ¼»¯metatable¹Ø¼ü×Ö
 void luaT_init(lua_State* L) {
     static const char* const luaT_eventname[] = {  /* ORDER TM */
       "__index", "__newindex",

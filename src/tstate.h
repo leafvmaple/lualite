@@ -47,7 +47,7 @@ struct lua_State : GCheader
     global_State* l_G;
     CallInfo* ci;
 
-    unsigned short nCcalls;
+    unsigned short nCcalls = 0;
 
     TValue l_gt;  /* table of globals */
 };

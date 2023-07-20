@@ -25,7 +25,8 @@ const char* luaL_findtable(lua_State* L, int idx, const char* fname, int szhint)
     return nullptr;
 }
 
-void luaL_openlib(lua_State* L, const char* libname, const luaL_Reg* l, int nup) {
+// 将l数组中的所有luaL_Reg注册到l_registry["_LOADED"][libname]中
+void luaI_openlib(lua_State* L, const char* libname, const luaL_Reg* l, int nup) {
     int size = libsize(l);
     luaL_findtable(L, LUA_REGISTRYINDEX, "_LOADED", 1);
     lua_getfield(L, -1, libname);
@@ -35,6 +36,7 @@ void luaL_openlib(lua_State* L, const char* libname, const luaL_Reg* l, int nup)
         lua_pushvalue(L, -1);
         lua_setfield(L, -3, libname);
     }
+    lua_remove(L, -2);
     for (; l->name; l++) {
         for (int i = 0; i < nup; i++)
             lua_pushvalue(L, -nup);
@@ -49,7 +51,7 @@ typedef struct LoadS {
 } LoadS;
 
 void luaL_register(lua_State* L, const char* libname, const luaL_Reg* l) {
-    luaL_openlib(L, libname, l, 0);
+    luaI_openlib(L, libname, l, 0);
 }
 
 const char* getS(lua_State* L, void* ud, size_t* size) {
@@ -62,9 +64,7 @@ const char* getS(lua_State* L, void* ud, size_t* size) {
 }
 
 int luaL_loadbuffer(lua_State* L, const char* buff, size_t size, const char* name) {
-    LoadS ls;
-    ls.s = buff;
-    ls.size = size;
+    LoadS ls{ buff, size };
     return lua_load(L, getS, &ls, name);
 }
 

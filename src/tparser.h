@@ -25,12 +25,12 @@ enum expkind {
 
 struct FuncState {
 	Proto* f;
-	Table* h;
-	FuncState* prev;
+	Table* h; /* {常量标识符：序号} */
+	FuncState* prev; // 上层嵌套函数
     lua_State* L;
 	LexState* ls;
-    int pc;
-    int nk;
+    int pc = 0;
+    int freereg = 0;  /* first free register */
 };
 
 struct expdesc {

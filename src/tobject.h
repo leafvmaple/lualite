@@ -92,10 +92,21 @@ struct ClosureHeader : GCheader {
     Table* env;
 };
 
+struct UpVal : GCheader {
+    TValue* v;  /* points to stack or to its own value */
+    union {
+        TValue value;  /* the value (when closed) */
+        struct {  /* double linked list (when open) */
+            struct UpVal* prev;
+            struct UpVal* next;
+        } l;
+    } u;
+};
+
 struct Proto : GCheader {
-    std::vector<TValue*>* k; /* 被该函数引用到的常量 */
-    std::vector<Instruction>* code;
-    std::vector<int>* lineinfo;
+    std::vector<TValue>* k; /* 被该函数引用到的常量 */
+    std::vector<Instruction>* code; /* 指令列表 */
+    std::vector<int>* lineinfo; /* 指令列表中每个指令所在的line */
     struct Proto** p;  /* 函数内嵌套函数 */
 };
 
@@ -108,7 +119,7 @@ struct CClosure : ClosureHeader {
 // Lua函数的指令，数据需要自行管理，因此需要一个Proto来存储
 struct LClosure : ClosureHeader {
     Proto* p;    // 函数原型
-    // UpVal* upvals[1];
+    UpVal* upvals[1];
 };
 
 union Closure {

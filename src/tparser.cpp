@@ -12,8 +12,6 @@ static void open_func(LexState* ls, FuncState* fs) {
     fs->h = luaH_new(L, 0, 0);
     fs->prev = ls->fs;
     fs->ls = ls;
-    fs->pc = 0;
-    fs->nk = 0;
     ls->fs = fs;
 
     sethvalue(L->top++, fs->h);
@@ -35,6 +33,7 @@ Proto* luaY_parser(lua_State* L, ZIO* z, const char* name) {
     return fs.f;
 }
 
+// 是否为block结束
 static bool block_follow(int token) {
     switch (token)
     {
@@ -67,11 +66,37 @@ static void simpleexp(LexState* ls, expdesc* v) {
     luaX_next(ls);
 }
 
+static BinOpr getbinopr(int op) {
+    switch (op) {
+    case '+': return OPR_ADD;
+    case '-': return OPR_SUB;
+    case '*': return OPR_MUL;
+    case '/': return OPR_DIV;
+    case '%': return OPR_MOD;
+    case '^': return OPR_POW;
+    case TK_CONCAT: return OPR_CONCAT;
+    case TK_NE: return OPR_NE;
+    case TK_EQ: return OPR_EQ;
+    case '<': return OPR_LT;
+    case TK_LE: return OPR_LE;
+    case '>': return OPR_GT;
+    case TK_GE: return OPR_GE;
+    case TK_AND: return OPR_AND;
+    case TK_OR: return OPR_OR;
+    default: return OPR_NOBINOPR;
+    }
+}
+
+/*
+** subexpr -> (simpleexp | unop subexpr) { binop subexpr }
+** where `binop' is any binary operator with a priority higher than `limit'
+*/
 static BinOpr subexpr(LexState* ls, expdesc* v, unsigned int limit) {
-    BinOpr op = OPR_ADD;
+    BinOpr op = OPR_NOBINOPR;
 
     ls->L->nCcalls++;
     simpleexp(ls, v);
+    op = getbinopr(ls->t.token);
     ls->L->nCcalls--;
 
     return op;
@@ -81,6 +106,7 @@ static void expr(LexState* ls, expdesc* v) {
     subexpr(ls, v, 0);
 }
 
+// 获取Token是否等于c，是则获取下一个Token并返回true
 static int testnext(LexState* ls, int c) {
     if (ls->t.token == c) {
         luaX_next(ls);
@@ -99,9 +125,14 @@ static int explist1(LexState* ls, expdesc* v) {
     return 0;
 }
 
+static void check_match(LexState* ls, int what) {
+    testnext(ls, what);
+}
+
 static void funcargs(LexState* ls, expdesc* f) {
     int base = 0;
     int nparams = 0;
+    FuncState* fs = ls->fs;
     expdesc args;
 
     switch (ls->t.token) { 
@@ -111,13 +142,17 @@ static void funcargs(LexState* ls, expdesc* f) {
             args.k = VVOID;
         else
             explist1(ls, &args);
+        check_match(ls, ')');
         break;
     }
     default: {
-        break;
+        return;
     }
     }
     base = f->u.s.info;
+    if (args.k != VVOID)
+        luaK_exp2nextreg(fs, &args);
+    nparams = fs->freereg - (base + 1);
     init_exp(f, VCALL, luaK_codeABC(ls->fs, OP_CALL, base, nparams + 1, 2));
 }
 
@@ -154,17 +189,19 @@ static void prefixexp(LexState* ls, expdesc* var) {
     }
 }
 
+/* primaryexp -> prefixexp { `.' NAME | `[' exp `]' | `:' NAME funcargs | funcargs } */
 static void primaryexp(LexState* ls, expdesc* v) {
+    FuncState* fs = ls->fs;
     prefixexp(ls, v);
     while (true) {
         switch (ls->t.token)
         {
         case '(': {
+            luaK_exp2nextreg(fs, v);
             funcargs(ls, v);
             break;
         }
-        default:
-            break;
+        default: return;
         }
     }
 }

@@ -45,13 +45,13 @@ const char* const luaX_tokens[] = {
     NULL
 };
 
+// 初始化语法关键字
 void luaX_init(lua_State* L) {
     for (int i = 0; i < NUM_RESERVED; i++) {
         TString* ts = luaS_new(L, luaX_tokens[i]);
         ts->tsv.reserved = (lu_byte)(i + 1);
     }
 }
-
 
 TString* luaX_newstring(LexState* ls, const char* str, size_t l) {
     lua_State* L = ls->L;
@@ -68,10 +68,24 @@ void luaX_setinput(lua_State* L, LexState* ls, ZIO* z, TString* source) {
     next(ls);
 }
 
+static void read_string(LexState* ls, int del, SemInfo* seminfo) {
+    save_and_next(ls);
+    while (ls->current != del) {
+        save_and_next(ls);
+    }
+    save_and_next(ls);  /* skip delimiter */
+    seminfo->ts = luaX_newstring(ls, ls->buff.c_str() + 1, ls->buff.size() - 2);
+}
+
 static int llex(LexState* ls, SemInfo* semInfo) {
     ls->buff.clear();
     while (true) {
         switch (ls->current) {
+        case '"':
+        case '\'': {
+            read_string(ls, ls->current, semInfo);
+            return TK_STRING;
+        }
         case EOZ: {
             return TK_EOS;
         }
@@ -92,6 +106,11 @@ static int llex(LexState* ls, SemInfo* semInfo) {
                     semInfo->ts = ts;
                     return TK_NAME;
                 }
+            }
+            else {
+                int c = ls->current;
+                next(ls);
+                return c;  /* single-char tokens (+ - / ...) */
             }
         }
         }

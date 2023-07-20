@@ -9,12 +9,16 @@ struct LG {
     global_State g;
 };
 
+// 初始化lua_State
+// 1. 初始化l_G全局状态机
+// 2. 初始化全局变量表
 void preinit_state(lua_State* L, global_State* g) {
     _G(L) = g;
-    L->nCcalls = 0;
     setnilvalue(_gt(L));
 }
 
+// 1. 初始化base_ci
+// 2. 初始化stack
 void stack_init(lua_State* L) {
     L->base_ci.resize(BASIC_CI_SIZE);
     L->ci = &L->base_ci.front();

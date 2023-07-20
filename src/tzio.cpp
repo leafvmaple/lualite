@@ -11,14 +11,6 @@ int zgetc(ZIO* z) {
     return luaZ_fill(z);
 }
 
-void luaZ_init(lua_State* L, ZIO* z, lua_Reader reader, void* data) {
-    z->L = L;
-    z->reader = reader;
-    z->data = data;
-    z->n = 0;
-    z->p = nullptr;
-}
-
 int luaZ_fill(ZIO* z) {
     size_t size = 0;
     const char* buff = nullptr;

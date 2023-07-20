@@ -1,6 +1,7 @@
 #include "lua.h"
 #include "tdo.h"
 #include "tparser.h"
+#include "tfunc.h"
 
 // | ci->func | ci->base | ... |        | LUA_MINSTACK - 1 .. | ci->top |
 // |          | L->base  | ... | L->top |
@@ -40,12 +41,14 @@ void f_parser(lua_State* L, SParser* p) {
     Closure* cl = nullptr;
 
     tf = luaY_parser(L, p->z, p->name);
+    cl = luaF_newLclosure(L, 0, &_gt(L)->value.gc->h);
+    cl->l.p = tf;
+    setclvalue(L->top, cl);
+    L->top++;
 }
 
 int luaD_protectedparser(lua_State* L, ZIO* z, const char* name) {
-    SParser p;
-    p.z = z;
-    p.name = name;
+    SParser p{z, name};
 
     f_parser(L, &p);
     return 1;

@@ -3,18 +3,14 @@
 #include "tgc.h"
 
 void luaS_resize(lua_State* L, int newsize) {
-    stringtable *tb = nullptr;
-
-    tb = &_G(L)->strt;
-
-    tb->hash.reserve(newsize);
+    _G(L)->strt.hash.reserve(newsize);;
 }
 
 TString* newlstr(lua_State* L, const char* str, size_t l) {
     TString* ts = nullptr;
     stringtable* tb = nullptr;
 
-    ts = (TString*)malloc(sizeof(TString) + sizeof(char) * (l + 1));
+    ts = (TString*)malloc(sizeof(TString) + (l + 1));
     ts->tsv.len = l;
     ts->tsv.hash = 0;
     ts->tsv.marked = _luaC_white(_G(L));
