@@ -151,7 +151,7 @@ union Closure {
 
 bool ttisnumber(TValue* obj);
 
-void setnilvalue(TValue* obj);
+void setnilvalue(TValue* obj _DECL);
 void setnvalue(TValue* obj, const lua_Number n _DECL);
 void setpvalue(TValue* obj, void* p _DECL);
 void setbvalue(TValue* obj, const bool b _DECL);

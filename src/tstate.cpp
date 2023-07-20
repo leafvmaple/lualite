@@ -26,7 +26,7 @@ void stack_init(lua_State* L) {
     L->stack.resize(BASIC_STACK_SIZE + EXTRA_STACK);
 
     L->ci->func = &L->stack.front();
-    setnilvalue(L->ci->func);
+    setnilvalue(L->ci->func, "#[stack_init] Function Entry#");
     L->ci->base = L->ci->func + 1;
     L->ci->top = L->ci->base + LUA_MINSTACK;
 

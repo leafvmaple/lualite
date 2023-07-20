@@ -4,8 +4,9 @@ bool ttisnumber(TValue* obj){
     return obj->tt == LUA_TNUMBER;
 }
 
-void setnilvalue(TValue* obj) {
+void setnilvalue(TValue* obj _IMPL) {
 	obj->tt = LUA_TNIL;
+	SET_DEBUG_NAME(obj, debug);
 }
 
 void setnvalue(TValue* obj, const lua_Number n _IMPL) {

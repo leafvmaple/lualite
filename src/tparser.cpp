@@ -14,8 +14,8 @@ static void open_func(LexState* ls, FuncState* fs) {
     fs->ls = ls;
     ls->fs = fs;
 
-    sethvalue(L->top++, fs->h, "Const String");
-    setptvalue(L->top++, fs->f, "Proto");
+    sethvalue(L->top++, fs->h, "#[open_func] Const String#");
+    setptvalue(L->top++, fs->f, "#[open_func] Proto#");
 }
 
 static void chunk(LexState* ls);
