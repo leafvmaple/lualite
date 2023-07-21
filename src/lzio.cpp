@@ -1,4 +1,4 @@
-#include "tzio.h"
+#include "lzio.h"
 #include <malloc.h>
 
 int char2int(char c) {

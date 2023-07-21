@@ -1,5 +1,5 @@
-#include "tfunc.h"
-#include "tgc.h"
+#include "lfunc.h"
+#include "lgc.h"
 
 Proto* luaF_newproto(lua_State* L) {
     Proto* p = new Proto;

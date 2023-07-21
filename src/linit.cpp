@@ -1,5 +1,5 @@
 #include "lualib.h"
-#include "tauxlib.h"
+#include "lauxlib.h"
 
 const luaL_Reg lualibs[] = {
     { ""     , luaopen_base },

@@ -1,7 +1,7 @@
-#include "ttable.h"
+#include "ltable.h"
 
-#include "tobject.h"
-#include "tgc.h"
+#include "lobject.h"
+#include "lgc.h"
 
 // Table ฯเนุ
 

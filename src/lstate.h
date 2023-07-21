@@ -4,8 +4,8 @@
 #include <list>
 #include <unordered_map>
 
-#include "tobject.h"
-#include "ttm.h"
+#include "lobject.h"
+#include "ltm.h"
 
 #define LUA_MINSTACK     20
 #define BASIC_CI_SIZE    8

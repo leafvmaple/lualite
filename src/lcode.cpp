@@ -1,9 +1,9 @@
-#include "tcode.h"
-#include "tparser.h"
-#include "tobject.h"
-#include "ttable.h"
-#include "tfunc.h"
-#include "tlex.h"
+#include "lcode.h"
+#include "lparser.h"
+#include "lobject.h"
+#include "ltable.h"
+#include "lfunc.h"
+#include "llex.h"
 
 // 给FuncState记录一个新增变量
 static int addk(FuncState* fs, TValue* k, TValue* v) {

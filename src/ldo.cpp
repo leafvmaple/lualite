@@ -1,8 +1,8 @@
 #include "lua.h"
-#include "tdo.h"
-#include "tparser.h"
-#include "tfunc.h"
-#include "tvm.h"
+#include "ldo.h"
+#include "lparser.h"
+#include "lfunc.h"
+#include "lvm.h"
 
 // | ci->func | ci->base | ... |        | LUA_MINSTACK - 1 .. | ci->top |
 // |          | L->base  | ... | L->top |

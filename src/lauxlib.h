@@ -1,6 +1,6 @@
 #pragma once
 
-#include "tstate.h"
+#include "lstate.h"
 
 struct luaL_Reg {
 	const char* name;

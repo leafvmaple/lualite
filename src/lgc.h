@@ -1,7 +1,7 @@
 #pragma once
 
-#include "tobject.h"
-#include "tstate.h"
+#include "lobject.h"
+#include "lstate.h"
 
 #define bitmask(b)	(1<<(b))
 #define bit2mask(b1,b2)	(bitmask(b1) | bitmask(b2))

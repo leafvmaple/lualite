@@ -1,8 +1,8 @@
 #pragma once
 
-#include "tobject.h"
-#include "tstate.h"
-#include "tzio.h"
+#include "lobject.h"
+#include "lstate.h"
+#include "lzio.h"
 
 #define PCRLUA		0	/* initiated a call to a Lua function */
 #define PCRC		1	/* did a call to a C function */

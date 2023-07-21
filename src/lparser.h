@@ -1,7 +1,7 @@
 #pragma once
 
-#include "tobject.h"
-#include "tzio.h"
+#include "lobject.h"
+#include "lzio.h"
 
 struct LexState;
 

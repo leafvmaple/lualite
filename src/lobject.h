@@ -6,7 +6,7 @@
 #include <unordered_map>
 
 #include "lua.h"
-#include "tlimits.h"
+#include "llimits.h"
 
 typedef double lua_Number;
 

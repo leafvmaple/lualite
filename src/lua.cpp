@@ -1,5 +1,5 @@
 #include "lua.h"
-#include "tauxlib.h"
+#include "lauxlib.h"
 #include "lualib.h"
 #include "luaconf.h"
 

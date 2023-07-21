@@ -1,8 +1,8 @@
-#include "tstate.h"
-#include "ttable.h"
-#include "tstring.h"
-#include "tlex.h"
-#include "tgc.h"
+#include "lstate.h"
+#include "ltable.h"
+#include "lstring.h"
+#include "llex.h"
+#include "lgc.h"
 
 struct LG {
     lua_State l;

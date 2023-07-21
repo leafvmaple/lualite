@@ -1,6 +1,6 @@
-#include "ttm.h"
-#include "tstring.h"
-#include "tstate.h"
+#include "ltm.h"
+#include "lstring.h"
+#include "lstate.h"
 
 // ³õÊ¼»¯metatable¹Ø¼ü×Ö
 void luaT_init(lua_State* L) {

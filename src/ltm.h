@@ -1,6 +1,6 @@
 #pragma once
 
-#include "tobject.h"
+#include "lobject.h"
 
 typedef enum {
     TM_INDEX,

@@ -1,5 +1,5 @@
 #include "lualib.h"
-#include "tauxlib.h"
+#include "lauxlib.h"
 
 /*
 ** If your system does not support `stdout', you can just remove this function.

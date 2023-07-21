@@ -1,10 +1,10 @@
-#include "tparser.h"
-#include "tlex.h"
-#include "tstring.h"
-#include "tparser.h"
-#include "tfunc.h"
-#include "ttable.h"
-#include "tcode.h"
+#include "lparser.h"
+#include "llex.h"
+#include "lstring.h"
+#include "lparser.h"
+#include "lfunc.h"
+#include "ltable.h"
+#include "lcode.h"
 
 static void open_func(LexState* ls, FuncState* fs) {
     lua_State* L = ls->L;

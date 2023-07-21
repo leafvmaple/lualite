@@ -1,6 +1,6 @@
-#include "tstring.h"
-#include "tstate.h"
-#include "tgc.h"
+#include "lstring.h"
+#include "lstate.h"
+#include "lgc.h"
 
 void luaS_resize(lua_State* L, int newsize) {
     _G(L)->strt.hash.reserve(newsize);;

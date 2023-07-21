@@ -3,7 +3,7 @@
 // ** Lua Lite virtual machine
 
 #include "lua.h"
-#include "tobject.h"
+#include "lobject.h"
 
 void luaV_gettable(lua_State* L, const TValue* t, TValue* key, TValue* val);
 

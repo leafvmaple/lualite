@@ -1,6 +1,6 @@
 #pragma once
 
-#include "tobject.h"
+#include "lobject.h"
 
 Table* luaH_new(lua_State* L, int narray, int nhash);
 const TValue* luaH_getstr(Table* t, const TString* key);

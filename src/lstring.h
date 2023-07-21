@@ -3,8 +3,8 @@
 #include "string.h"
 
 #include "lua.h"
-#include "tobject.h"
-#include "tgc.h"
+#include "lobject.h"
+#include "lgc.h"
 
 void luaS_resize(lua_State* L, int newsize);
 TString* luaS_newlstr(lua_State* L, const char* str, size_t l);

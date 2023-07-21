@@ -1,6 +1,6 @@
 #pragma once
 
-#include "tobject.h"
+#include "lobject.h"
 
 Proto* luaF_newproto(lua_State* L);
 // ´´½¨CClosure

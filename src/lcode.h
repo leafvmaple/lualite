@@ -1,7 +1,7 @@
 #pragma once
 
 #include "lopcodes.h"
-#include "tparser.h"
+#include "lparser.h"
 
 struct FuncState;
 union TString;

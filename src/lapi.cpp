@@ -1,11 +1,11 @@
 #include "lua.h"
-#include "tdo.h"
-#include "tfunc.h"
-#include "tstate.h"
-#include "tstring.h"
-#include "ttable.h"
-#include "tvm.h"
-#include "tzio.h"
+#include "ldo.h"
+#include "lfunc.h"
+#include "lstate.h"
+#include "lstring.h"
+#include "ltable.h"
+#include "lvm.h"
+#include "lzio.h"
 
 TValue* index2adr(lua_State* L, int idx) {
     if (idx > 0) {

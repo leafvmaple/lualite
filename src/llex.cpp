@@ -1,9 +1,9 @@
 #include <ctype.h>
 
-#include "tlex.h"
-#include "tstring.h"
-#include "tparser.h"
-#include "ttable.h"
+#include "llex.h"
+#include "lstring.h"
+#include "lparser.h"
+#include "ltable.h"
 
 void next(LexState* ls) {
     ls->current = zgetc(ls->z);

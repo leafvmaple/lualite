@@ -1,7 +1,7 @@
-#include "tvm.h"
-#include "tdo.h"
-#include "ttable.h"
-#include "tstate.h"
+#include "lvm.h"
+#include "ldo.h"
+#include "ltable.h"
+#include "lstate.h"
 #include "lopcodes.h"
 
 inline TValue* RA(TValue* base, Instruction i) {
