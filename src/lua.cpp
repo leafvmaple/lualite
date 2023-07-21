@@ -3,6 +3,11 @@
 #include "lualib.h"
 #include "luaconf.h"
 
+static void print_version(void) {
+    fprintf(stderr, "%s\n", LUA_VERSION "  " LUA_COPYRIGHT);
+    fflush(stderr);
+}
+
 const char* get_prompt(lua_State* L, int firstline) {
     return firstline ? LUA_PROMPT : LUA_PROMPT2;
 }
@@ -54,6 +59,7 @@ struct Smain {
 static int pmain(lua_State* L) {
     Smain* s = (struct Smain*)lua_touserdata(L, 1);
     luaL_openlibs(L);
+    print_version();
     dotty(L);
     return 0;
 }
