@@ -48,8 +48,8 @@ void luaD_call(lua_State* L, TValue* func, int nResults) {
 }
 
 struct SParser {  /* data to `f_parser' */
-	ZIO* z;
-	const char* name;
+    ZIO* z;
+    const char* name;
 };
 
 void f_parser(lua_State* L, SParser* p) {

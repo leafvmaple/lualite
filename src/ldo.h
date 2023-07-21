@@ -8,8 +8,8 @@
 #define PCRC		1	/* did a call to a C function */
 
 struct CCallS {  /* data to `f_Ccall' */
-    lua_CFunction func;
-    void* ud;
+    lua_CFunction func = nullptr;
+    void* ud = nullptr;
 };
 
 inline ptrdiff_t savestack(lua_State* L, TValue* p) {
