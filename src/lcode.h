@@ -39,4 +39,5 @@ void luaK_reserveregs(FuncState* fs, int n);
 void luaK_dischargevars(FuncState* fs, expdesc* e);
 void luaK_exp2nextreg(FuncState* fs, expdesc* e);
 
+void luaK_ret(FuncState* fs, int first, int nret);
 int luaK_stringK(FuncState* fs, TString* s);

@@ -57,6 +57,14 @@ void luaV_execute(lua_State* L, int nexeccalls) {
             luaV_gettable(L, &g, rb, ra);
             continue;
         }
+        case OP_RETURN: {
+            int b = GETARG_B(i);
+            if (b != 0) L->top = ra + b - 1;
+            L->savedpc = pc;
+            // b = luaD_poscall(L, ra);
+            if (--nexeccalls == 0)  /* was previous function running `here'? */
+                return;  /* no: return */
+        }
         case OP_CALL: {
             // b为函数名+参数个数
             int b = GETARG_B(i);

@@ -88,6 +88,10 @@ void luaK_exp2nextreg(FuncState* fs, expdesc* e) {
     exp2reg(fs, e, fs->freereg - 1);
 }
 
+void luaK_ret(FuncState* fs, int first, int nret) {
+    luaK_codeABC(fs, OP_RETURN, first, nret + 1, 0);
+}
+
 int luaK_stringK(FuncState* fs, TString* s) {
     TValue o;
     setsvalue(&o, s);
