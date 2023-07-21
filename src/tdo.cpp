@@ -2,32 +2,48 @@
 #include "tdo.h"
 #include "tparser.h"
 #include "tfunc.h"
+#include "tvm.h"
 
 // | ci->func | ci->base | ... |        | LUA_MINSTACK - 1 .. | ci->top |
 // |          | L->base  | ... | L->top |
 int luaD_precall(lua_State* L, TValue* func, int nresults) {
-    CClosure* cl = nullptr;
+    LClosure* cl = nullptr;
     CallInfo* ci = nullptr;
     int n = 0;
 
-    cl = (CClosure*)func->value.gc;
-    if (cl->isC)
-    {
+    cl = &func->value.gc->cl.l;
+    if (!cl->isC) {
+        ci = ++L->ci;
+        ci->func = func;
+        ci->base = ci->func + 1;
+        // TODO
+        ci->top = L->top + LUA_MINSTACK;
+
+        L->base = ci->base;
+        L->top = ci->top;
+        L->savedpc = &cl->p->code.front();
+
+        return PCRLUA;
+    }
+    else {
+        CClosure* c = &func->value.gc->cl.c;
         ci = ++L->ci;
         ci->func = func;
         ci->base = ci->func + 1;
         ci->top = L->top + LUA_MINSTACK;
 
         L->base = ci->base;
-        cl->f(L);
-    }
+        c->f(L);
 
-    return PCRC;
+        return PCRC;
+    }
 }
 
 void luaD_call(lua_State* L, TValue* func, int nResults) {
     ++L->nCcalls;
-    luaD_precall(L, func, nResults);
+    if (luaD_precall(L, func, nResults) == PCRLUA)
+        luaV_execute(L, 1);
+
     L->nCcalls--;
 }
 

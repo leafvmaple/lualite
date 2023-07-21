@@ -51,8 +51,8 @@ void setptvalue(TValue* obj, const Proto* pt _IMPL) {
 	SET_DEBUG_NAME(obj, debug);
 }
 
-void setobj(TValue* desc, const TValue* src _IMPL) {
+void setobj(TValue* desc, const TValue* src) {
 	desc->value.gc = src->value.gc;
 	desc->tt = src->tt;
-	SET_DEBUG_NAME(desc, debug);
+	COPY_DEBUG_NAME(desc, src);
 }

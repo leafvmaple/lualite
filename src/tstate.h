@@ -15,9 +15,9 @@
 
 struct CallInfo
 {
-    TValue* top;
-    TValue* base;
-    TValue* func;
+    TValue* top = nullptr;
+    TValue* base = nullptr;
+    TValue* func = nullptr;
 };
 
 struct stringtable {
@@ -38,14 +38,15 @@ struct global_State
 
 struct lua_State : GCheader
 {
-    TValue* top;
-    TValue* base;
+    TValue* top = nullptr;
+    TValue* base = nullptr;
 
     std::vector<TValue> stack;
     std::vector<CallInfo> base_ci;
 
-    global_State* l_G;
-    CallInfo* ci;
+    global_State* l_G = nullptr;
+    CallInfo* ci = nullptr;
+    const Instruction* savedpc = nullptr; // 当前函数的起始指令
 
     unsigned short nCcalls = 0;
 

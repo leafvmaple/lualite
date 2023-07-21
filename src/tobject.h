@@ -8,14 +8,6 @@
 #include "lua.h"
 #include "tlimits.h"
 
-#define LAST_TAG        LUA_TTHREAD
-
-#define NUM_TAGS        (LAST_TAG + 1)
-
-#define LUA_TPROTO      (LAST_TAG + 1)
-#define LUA_TUPVAL      (LAST_TAG + 2)
-#define LUA_TDEADKEY    (LAST_TAG + 3)
-
 typedef double lua_Number;
 
 struct TValue;
@@ -41,7 +33,7 @@ struct TValue {
     std::string name;
 #endif
     Value value;
-    int tt = 0;
+    TVALUE_TYPE tt = LUA_TNIL;
 
     ~TValue() {}
 
@@ -49,9 +41,11 @@ struct TValue {
 };
 
 #ifdef _DEBUG
-#define SET_DEBUG_NAME(t, s) if (s) {((t->name) = (s));}
+#define SET_DEBUG_NAME(t, s) if (s) {(((t)->name) = (s));}
+#define COPY_DEBUG_NAME(d, s) (((d)->name) = (s)->name)
 #else
 #define SET_DEBUG_NAME(t, s)
+#define COPY_DEBUG_NAME(d, s)
 #endif
 
 union TString {
@@ -146,9 +140,6 @@ union Closure {
     ~Closure() {}
 };
 
-#define _DECL , char const* debug = nullptr
-#define _IMPL , char const* debug
-
 bool ttisnumber(TValue* obj);
 
 void setnilvalue(TValue* obj _DECL);
@@ -159,7 +150,7 @@ void setsvalue(TValue* obj, const TString* s _DECL);
 void sethvalue(TValue* obj, const Table* h _DECL);
 void setclvalue(TValue* obj, const Closure* cl _DECL);
 void setptvalue(TValue* obj, const Proto* pt _DECL);
-void setobj(TValue* desc, const TValue* src _DECL);
+void setobj(TValue* desc, const TValue* src);
 
 const TValue luaO_nilobject_;
 #define luaO_nilobject (&luaO_nilobject_)

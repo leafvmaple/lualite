@@ -68,7 +68,7 @@ void lua_pushvalue(lua_State* L, int idx) {
     L->top++;
 }
 
-void lua_pushcclosure(lua_State* L, lua_CFunction fn, int n) {
+void lua_pushcclosure(lua_State* L, lua_CFunction fn, int n _IMPL) {
     Closure* cl;
 
     cl = luaF_newCclosure(L, n, getcurrenv(L));
@@ -76,12 +76,12 @@ void lua_pushcclosure(lua_State* L, lua_CFunction fn, int n) {
     L->top -= n;
     while (n--)
         setobj(&cl->c.upvalue[n], L->top + n);
-    setclvalue(L->top, cl);
+    setclvalue(L->top, cl, debug);
     L->top++;
 }
 
-void lua_pushcfunction(lua_State* L, lua_CFunction f) {
-    lua_pushcclosure(L, f, 0);
+void lua_pushcfunction(lua_State* L, lua_CFunction f _IMPL) {
+    lua_pushcclosure(L, f, 0, debug);
 }
 
 void lua_settable(lua_State* L, int idx) {
@@ -130,6 +130,10 @@ void lua_getfield(lua_State* L, int idx, const char* k) {
 
 void lua_getglobal(lua_State* L, int idx, const char* k) {
     lua_getfield(L, LUA_GLOBALSINDEX, k);
+}
+
+int lua_gettop(lua_State* L) {
+    return static_cast<int>(L->top - L->base);
 }
 
 void lua_settop(lua_State* L, int idx) {

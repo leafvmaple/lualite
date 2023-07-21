@@ -12,6 +12,7 @@ static void open_func(LexState* ls, FuncState* fs) {
     fs->h = luaH_new(L, 0, 0);
     fs->prev = ls->fs;
     fs->ls = ls;
+    fs->L = ls->L;
     ls->fs = fs;
 
     sethvalue(L->top++, fs->h, "#[open_func] Const String#");

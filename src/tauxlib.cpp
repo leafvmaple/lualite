@@ -40,7 +40,7 @@ void luaI_openlib(lua_State* L, const char* libname, const luaL_Reg* l, int nup)
     for (; l->name; l++) {
         for (int i = 0; i < nup; i++)
             lua_pushvalue(L, -nup);
-        lua_pushcclosure(L, l->func, nup);
+        lua_pushcclosure(L, l->func, nup, l->name);
         lua_setfield(L, -(nup + 2), l->name);
     }
 }

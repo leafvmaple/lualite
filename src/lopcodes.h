@@ -85,8 +85,24 @@ enum OpCode {
 #define MASK0(n,p)	(~MASK1(n,p))
 #define MASK1(n,p)	((~((~(Instruction)0)<<n))<<p)
 
+inline OpCode GET_OPCODE(const Instruction& i) {
+	return static_cast<OpCode>((i >> POS_OP) & MASK1(SIZE_OP, 0));
+}
+
+inline Instruction GETARG_A(const Instruction& i) {
+	return (i >> POS_A) & MASK1(SIZE_A, 0);
+}
 inline void SETARG_A(Instruction& i, int u) {
-	i = i & MASK0(SIZE_A, POS_A) | static_cast<Instruction>(u) << POS_A & MASK1(SIZE_A, POS_A);
+    i = i & MASK0(SIZE_A, POS_A) | static_cast<Instruction>(u) << POS_A & MASK1(SIZE_A, POS_A);
+}
+inline Instruction GETARG_B(const Instruction& i) {
+    return (i >> POS_B) & MASK1(SIZE_B, 0);
+}
+inline Instruction GETARG_C(const Instruction& i) {
+    return (i >> POS_C) & MASK1(SIZE_C, 0);
+}
+inline Instruction GETARG_Bx(const Instruction& i) {
+    return (i >> POS_Bx) & MASK1(SIZE_Bx, 0);
 }
 
 inline Instruction CREATE_ABC(Instruction o, Instruction a, Instruction b, Instruction c) {

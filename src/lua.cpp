@@ -30,12 +30,18 @@ int loadline(lua_State* L) {
     return status;
 }
 
+static int docall(lua_State* L, int narg, int clear) {
+    lua_call(L, narg, 0);
+    return true;
+}
+
 void dotty(lua_State* L) {
     int status = 0;
     while ((status = loadline(L)) != -1) {
         size_t len = 0;
         const char* s = lua_tolstring(L, -1, &len);
         status = luaL_loadbuffer(L, s, len, "=stdin");
+        status = docall(L, 0, 0);
     }
 }
 
