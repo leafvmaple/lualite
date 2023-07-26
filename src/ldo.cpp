@@ -62,8 +62,8 @@ int luaD_poscall(lua_State* L, TValue* firstResult) {
 }
 
 struct SParser {  /* data to `f_parser' */
-    ZIO* z;
-    const char* name;
+    ZIO* z = nullptr;
+    const char* name = nullptr;
 };
 
 void f_parser(lua_State* L, SParser* p) {
