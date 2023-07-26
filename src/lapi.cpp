@@ -39,10 +39,8 @@ static void f_Ccall(lua_State* L, CCallS* c) {
     Closure* cl;
     cl = luaF_newCclosure(L, 0, getcurrenv(L));
     cl->c.f = c->func;
-    setclvalue(L->top, cl, "#[f_Ccall] CClosure#");
-    L->top++;
-    setpvalue(L->top, c->ud, "#[f_Ccall] ud#");
-    L->top++;
+    setclvalue(L->top++, cl, "#[f_Ccall] CClosure#");
+    setpvalue(L->top++, c->ud, "#[f_Ccall] ud#");
     luaD_call(L, L->top - 2, 0);
 }
 
@@ -52,8 +50,7 @@ void lua_pushnil(lua_State* L) {
 }
 
 void lua_pushlstring(lua_State* L, const char* s, size_t l _IMPL) {
-    setsvalue(L->top, luaS_newlstr(L, s, l), debug ? debug : s);
-    L->top++;
+    setsvalue(L->top++, luaS_newlstr(L, s, l), debug ? debug : s);
 }
 
 void lua_pushstring(lua_State* L, const char* s _IMPL) {
@@ -64,8 +61,7 @@ void lua_pushstring(lua_State* L, const char* s _IMPL) {
 }
 
 void lua_pushvalue(lua_State* L, int idx) {
-    setobj(L->top, index2adr(L, idx));
-    L->top++;
+    setobj(L->top++, index2adr(L, idx));
 }
 
 void lua_pushcclosure(lua_State* L, lua_CFunction fn, int n _IMPL) {
