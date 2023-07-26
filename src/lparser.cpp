@@ -133,9 +133,10 @@ static int explist1(LexState* ls, expdesc* v) {
         n++;
     }
 
-    return 0;
+    return n;
 }
 
+/* funcstat -> FUNCTION funcname body */
 static void funcargs(LexState* ls, expdesc* f) {
     int base = 0;
     int nparams = 0;
@@ -225,10 +226,23 @@ static void expr(LexState* ls, expdesc* v) {
     subexpr(ls, v, 0);
 }
 
+static void assignment(LexState* ls, expdesc* lh, int nvars) {
+    expdesc e;
+    int nexps = 0;
+    luaX_next(ls);
+    nexps = explist1(ls, &e);
+    luaK_storevar(ls->fs, lh, &e);
+}
+
+/* stat -> func | assignment */
 static void exprstat(LexState* ls) {
     FuncState* fs = ls->fs;
     expdesc desc;
     primaryexp(ls, &desc);
+    if (desc.k == VCALL)
+        SETARG_C(getcode(fs, &desc), 1);
+    else
+        assignment(ls, &desc, 1);
 }
 
 static void statement(LexState* ls) {

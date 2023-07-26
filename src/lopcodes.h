@@ -98,8 +98,14 @@ inline void SETARG_A(Instruction& i, int u) {
 inline Instruction GETARG_B(const Instruction& i) {
     return (i >> POS_B) & MASK1(SIZE_B, 0);
 }
+inline void SETARG_B(Instruction& i, int u) {
+    i = i & MASK0(SIZE_B, POS_B) | static_cast<Instruction>(u) << POS_B & MASK1(SIZE_B, POS_B);
+}
 inline Instruction GETARG_C(const Instruction& i) {
     return (i >> POS_C) & MASK1(SIZE_C, 0);
+}
+inline void SETARG_C(Instruction& i, int u) {
+    i = i & MASK0(SIZE_C, POS_C) | static_cast<Instruction>(u) << POS_C & MASK1(SIZE_C, POS_C);
 }
 inline Instruction GETARG_Bx(const Instruction& i) {
     return (i >> POS_Bx) & MASK1(SIZE_Bx, 0);

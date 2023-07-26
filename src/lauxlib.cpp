@@ -37,6 +37,10 @@ void luaI_openlib(lua_State* L, const char* libname, const luaL_Reg* l, int nup)
         lua_setfield(L, -3, libname);
     }
     lua_remove(L, -2); /* remove _LOADED table */
+    for (; l->name; l++) {
+        lua_pushcclosure(L, l->func, nup, l->name);
+        lua_setfield(L, -(nup + 2), l->name);
+    }
 }
 
 typedef struct LoadS {

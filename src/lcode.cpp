@@ -31,7 +31,7 @@ static void discharge2reg(FuncState* fs, expdesc* e, int reg) {
     }
     case VRELOCABLE: {
         // 可重新分配，直接把新寄存器位置设到指令A参数即可（指令会通过A参数从指定寄存器取值）
-        Instruction* pc = getcode(fs, e);
+        Instruction* pc = &getcode(fs, e);
         SETARG_A(*pc, reg);
         break;
     }
@@ -64,6 +64,12 @@ int luaK_codeABC(FuncState* fs, OpCode o, int A, int B, int C) {
     return luaK_code(fs, CREATE_ABC(o, A, B, C), fs->ls->lastline);
 }
 
+int luaK_exp2anyreg(FuncState* fs, expdesc* e) {
+    luaK_dischargevars(fs, e);
+    luaK_exp2nextreg(fs, e);
+    return e->u.s.info;
+}
+
 void luaK_reserveregs(FuncState* fs, int n) {
     fs->freereg += n;
 }
@@ -88,12 +94,25 @@ void luaK_exp2nextreg(FuncState* fs, expdesc* e) {
     exp2reg(fs, e, fs->freereg - 1);
 }
 
+void luaK_storevar(FuncState* fs, expdesc* var, expdesc* ex) {
+    switch (var->k)
+    {
+    case VGLOBAL: {
+        int e = luaK_exp2anyreg(fs, ex);
+        luaK_codeABx(fs, OP_SETGLOBAL, e, var->u.s.info);
+        break;
+    }
+    default:
+        break;
+    }
+}
+
 void luaK_ret(FuncState* fs, int first, int nret) {
     luaK_codeABC(fs, OP_RETURN, first, nret + 1, 0);
 }
 
 int luaK_stringK(FuncState* fs, TString* s) {
     TValue o;
-    setsvalue(&o, s);
+    setsvalue(&o, s, s->tsv.s);
     return addk(fs, &o, &o);
 }

@@ -73,6 +73,12 @@ void luaV_execute(lua_State* L, int nexeccalls) {
             luaD_precall(L, ra, 0);
             continue;
         }
+        case OP_SETGLOBAL: {
+            TValue g;
+            sethvalue(&g, cl->env);
+            luaV_settable(L, &g, KBx(k, i), ra);
+            continue;
+        }
         default:
             break;
         }
