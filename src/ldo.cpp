@@ -12,6 +12,7 @@ int luaD_precall(lua_State* L, TValue* func, int nresults) {
     int n = 0;
 
     cl = &func->value.gc->cl.l;
+    L->ci->savedpc = L->savedpc;
     if (!cl->isC) {
         ci = ++L->ci;
         ci->func = func;
@@ -26,6 +27,7 @@ int luaD_precall(lua_State* L, TValue* func, int nresults) {
         return PCRLUA;
     }
     else {
+        int n = 0;
         CClosure* c = &func->value.gc->cl.c;
         ci = ++L->ci;
         ci->func = func;
@@ -33,7 +35,8 @@ int luaD_precall(lua_State* L, TValue* func, int nresults) {
         ci->top = L->top + LUA_MINSTACK;
 
         L->base = ci->base;
-        c->f(L);
+        n = c->f(L);
+        luaD_poscall(L, L->top - n);
 
         return PCRC;
     }
@@ -45,6 +48,17 @@ void luaD_call(lua_State* L, TValue* func, int nResults) {
         luaV_execute(L, 1);
 
     L->nCcalls--;
+}
+
+int luaD_poscall(lua_State* L, TValue* firstResult) {
+    TValue* res = nullptr;
+    CallInfo* ci = nullptr;
+
+    ci = L->ci--;
+    L->top = ci->func;
+    L->base = L->ci->base;
+    L->savedpc = L->ci->savedpc;
+    return 0;
 }
 
 struct SParser {  /* data to `f_parser' */

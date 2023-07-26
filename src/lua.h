@@ -40,8 +40,8 @@ typedef const char* (*lua_Reader) (lua_State* L, void* ud, size_t* sz);
 lua_State* lua_newstate();
 
 void lua_pushnil(lua_State* L);
-void lua_pushlstring(lua_State* L, const char* s, size_t l);
-void lua_pushstring(lua_State* L, const char* s);
+void lua_pushlstring(lua_State* L, const char* s, size_t l _DECL);
+void lua_pushstring(lua_State* L, const char* s _DECL);
 void lua_pushvalue(lua_State* L, int idx);
 void lua_pushcclosure(lua_State* L, lua_CFunction fn, int n _DECL);
 void lua_pushcfunction(lua_State* L, lua_CFunction f _DECL);
@@ -58,7 +58,7 @@ inline void lua_setglobal(lua_State* L, const char* s) {
     lua_setfield(L, LUA_GLOBALSINDEX, s);
 }
 
-void lua_createtable(lua_State* L, int narr, int nrec);
+void lua_createtable(lua_State* L, int narr, int nrec _DECL);
 
 int lua_gettop(lua_State* L);
 void lua_settop(lua_State* L, int idx);

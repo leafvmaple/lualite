@@ -51,16 +51,16 @@ void lua_pushnil(lua_State* L) {
     L->top++;
 }
 
-void lua_pushlstring(lua_State* L, const char* s, size_t l) {
-    setsvalue(L->top, luaS_newlstr(L, s, l), s);
+void lua_pushlstring(lua_State* L, const char* s, size_t l _IMPL) {
+    setsvalue(L->top, luaS_newlstr(L, s, l), debug ? debug : s);
     L->top++;
 }
 
-void lua_pushstring(lua_State* L, const char* s) {
+void lua_pushstring(lua_State* L, const char* s _IMPL) {
     if (s == nullptr)
         lua_pushnil(L);
     else
-        lua_pushlstring(L, s, strlen(s));
+        lua_pushlstring(L, s, strlen(s), debug);
 }
 
 void lua_pushvalue(lua_State* L, int idx) {
@@ -99,8 +99,8 @@ void lua_setfield(lua_State* L, int idx, const char* k) {
     L->top--;
 }
 
-void lua_createtable(lua_State* L, int narr, int nrec) {
-    sethvalue(L->top, luaH_new(L, narr, nrec));
+void lua_createtable(lua_State* L, int narr, int nrec _IMPL) {
+    sethvalue(L->top, luaH_new(L, narr, nrec), debug);
     L->top++;
 }
 

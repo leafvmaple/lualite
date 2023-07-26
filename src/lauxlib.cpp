@@ -14,7 +14,7 @@ const char* luaL_findtable(lua_State* L, int idx, const char* fname, int szhint)
     lua_gettable(L, -2);
     if (lua_isnil(L, -1)) {
         lua_pop(L, 1);
-        lua_createtable(L, 0, szhint);
+        lua_createtable(L, 0, szhint, fname);
         // lua_pushlstring(L, fname, e - fname);
         lua_pushstring(L, fname);
         lua_pushvalue(L, -2);
@@ -36,13 +36,7 @@ void luaI_openlib(lua_State* L, const char* libname, const luaL_Reg* l, int nup)
         lua_pushvalue(L, -1);
         lua_setfield(L, -3, libname);
     }
-    lua_remove(L, -2);
-    for (; l->name; l++) {
-        for (int i = 0; i < nup; i++)
-            lua_pushvalue(L, -nup);
-        lua_pushcclosure(L, l->func, nup, l->name);
-        lua_setfield(L, -(nup + 2), l->name);
-    }
+    lua_remove(L, -2); /* remove _LOADED table */
 }
 
 typedef struct LoadS {

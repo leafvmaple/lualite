@@ -18,6 +18,8 @@ struct CallInfo
     TValue* top = nullptr;
     TValue* base = nullptr;
     TValue* func = nullptr;
+
+    const Instruction* savedpc = nullptr;
 };
 
 struct stringtable {

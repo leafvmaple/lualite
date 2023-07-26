@@ -18,5 +18,6 @@ inline ptrdiff_t savestack(lua_State* L, TValue* p) {
 
 int luaD_precall(lua_State* L, TValue* func, int nresults);
 void luaD_call(lua_State* L, TValue* func, int nResults);
+int luaD_poscall(lua_State* L, TValue* firstResult);
 
 int luaD_protectedparser(lua_State* L, ZIO* z, const char* name);
