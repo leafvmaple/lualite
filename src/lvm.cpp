@@ -14,7 +14,7 @@ inline TValue* RC(TValue* base, Instruction i) {
     return base + GETARG_C(i);
 }
 inline TValue* KBx(TValue* base, Instruction i) {
-    return base + GETARG_C(i);
+    return base + GETARG_Bx(i);
 }
 
 void luaV_gettable(lua_State* L, const TValue* t, TValue* key, TValue* val) {
