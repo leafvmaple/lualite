@@ -20,7 +20,7 @@
 
 #define l_setbit(x,b)	setbits(x, bitmask(b))
 
-void luaC_link(lua_State* L, GCheader* o, lu_byte tt);
+void luaC_link(lua_State* L, GCheader* o, TVALUE_TYPE tt);
 
 inline lu_byte _luaC_white(global_State* g) {
     return static_cast<lu_byte>(g->currentwhite & WHITEBITS);

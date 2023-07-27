@@ -13,5 +13,5 @@ inline TString* luaS_new(lua_State* L, const char* s) {
     return luaS_newlstr(L, s, strlen(s));
 }
 inline void _luaS_fix(TString* s) {
-    l_setbit((s)->tsv.marked, FIXEDBIT);
+    l_setbit((s)->marked, FIXEDBIT);
 }

@@ -11,17 +11,17 @@ TString* newlstr(lua_State* L, const char* str, size_t l) {
     stringtable* tb = nullptr;
 
     ts = (TString*)malloc(sizeof(TString) + (l + 1));
-    ts->tsv.len = l;
-    ts->tsv.hash = 0;
-    ts->tsv.marked = _luaC_white(_G(L));
-    ts->tsv.tt = LUA_TSTRING;
-    ts->tsv.reserved = 0;
+    ts->len = l;
+    ts->hash = 0;
+    ts->marked = _luaC_white(_G(L));
+    ts->tt = LUA_TSTRING;
+    ts->reserved = 0;
 
-    memcpy(ts->tsv.s, str, l * sizeof(char));
-    ts->tsv.s[l] = '\0';
+    memcpy(ts->s, str, l * sizeof(char));
+    ts->s[l] = '\0';
 
     tb = &_G(L)->strt;
-    tb->hash[str] = &ts->tsv;
+    tb->hash[str] = ts;
     tb->nuse++;
 
     return ts;

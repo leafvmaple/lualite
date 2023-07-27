@@ -15,14 +15,14 @@ union GCObject;
 
 struct GCheader {
     // GCObject* next;
-    lu_byte tt;
+    TVALUE_TYPE tt = LUA_TNIL;
     lu_byte marked;
 
     ~GCheader() {}
 };
 
 union Value {
-    GCObject* gc = nullptr;  // 非内置类型，只存指针，需要GC
+    GCheader* gc = nullptr;  // 非内置类型，只存指针，需要GC
     void* p;
     lua_Number n;
     int b;
@@ -48,24 +48,18 @@ struct TValue {
 #define COPY_DEBUG_NAME(d, s)
 #endif
 
-union TString {
-    struct Genuine : GCheader {
-        lu_byte reserved  = 0;      // 字符串为系统保留标识符时，这里不为0
-        unsigned int hash = 0;
-        size_t len        = 0;
-        char s[0];
-
-        ~Genuine() {}
-    } tsv;
-
-    ~TString() {}
+struct TString: GCheader{
+    lu_byte reserved  = 0;      // 字符串为系统保留标识符时，这里不为0
+    unsigned int hash = 0;
+    size_t len        = 0;
+    char s[0];
 };
 
 inline size_t keyhash(const TValue& k) {
     switch (k.tt) {
     case LUA_TSTRING: {
         TString* s = (TString*)k.value.gc;
-        return std::hash<const char*>{}(s->tsv.s);
+        return std::hash<const char*>{}(s->s);
     }
     default: {
         return 0;
@@ -109,10 +103,9 @@ struct UpVal : GCheader {
 
         ~Practical() {}
     } u;
-
-    ~UpVal() {}
 };
 
+// 包含操作和数据的完整可执行模块
 struct Proto : GCheader {
     std::vector<TValue> k; /* 被该函数引用到的常量 */
     std::vector<Instruction> code; /* 指令列表 */
@@ -123,13 +116,13 @@ struct Proto : GCheader {
 // C函数中的指令和数据都在代码段数据段中，只需要一个函数指针入口即可
 struct CClosure : Closure {
     lua_CFunction f = nullptr;    // 函数指针
-    TValue upvalue[0];
+    std::vector<TValue> upvalue;
 };
 
-// Lua函数的指令，数据需要自行管理，因此需要一个Proto来存储
+// Lua函数的指令和数据需要自行管理，因此需要一个Proto来存储
 struct LClosure : Closure {
     Proto* p = nullptr;    // 函数原型
-    UpVal* upvals[1];
+    std::vector<UpVal*> upvals;
 };
 
 bool ttisnumber(TValue* obj);

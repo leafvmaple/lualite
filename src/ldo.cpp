@@ -11,7 +11,7 @@ int luaD_precall(lua_State* L, TValue* func, int nresults) {
     CallInfo* ci = nullptr;
     int n = 0;
 
-    cl = &func->value.gc->cl;
+    cl = static_cast<CClosure*>(func->value.gc);
     L->ci->savedpc = L->savedpc;
     if (!cl->isC) {
         LClosure* l = static_cast<LClosure*>(cl);
@@ -72,7 +72,7 @@ void f_parser(lua_State* L, SParser* p) {
     LClosure* cl = nullptr;
 
     tf = luaY_parser(L, p->z, p->name);
-    cl = luaF_newLclosure(L, 0, &_gt(L)->value.gc->h);
+    cl = luaF_newLclosure(L, 0, static_cast<Table*>(_gt(L)->value.gc));
     cl->p = tf;
     setclvalue(L->top, cl);
     L->top++;

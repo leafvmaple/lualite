@@ -28,25 +28,25 @@ void setbvalue(TValue* obj, const bool b _IMPL) {
 }
 
 void setsvalue(TValue* obj, const TString* s _IMPL) {
-	obj->value.gc = (GCObject*)s;
+	obj->value.gc = const_cast<TString*>(s);
 	obj->tt = LUA_TSTRING;
 	SET_DEBUG_NAME(obj, debug);
 }
 
 void sethvalue(TValue* obj, const Table* h _IMPL) {
-	obj->value.gc = (GCObject*)h;
+	obj->value.gc = const_cast<Table*>(h);
 	obj->tt = LUA_TTABLE;
 	SET_DEBUG_NAME(obj, debug);
 }
 
 void setclvalue(TValue* obj, const Closure* cl _IMPL) {
-	obj->value.gc = (GCObject*)cl;
+	obj->value.gc = const_cast<Closure*>(cl);
 	obj->tt = LUA_TFUNCTION;
 	SET_DEBUG_NAME(obj, debug);
 }
 
 void setptvalue(TValue* obj, const Proto* pt _IMPL) {
-	obj->value.gc = (GCObject*)pt;
+	obj->value.gc = const_cast<Proto*>(pt);
 	obj->tt = LUA_TPROTO;
 	SET_DEBUG_NAME(obj, debug);
 }

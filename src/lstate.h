@@ -55,18 +55,6 @@ struct lua_State : GCheader
     TValue l_gt;  /* table of globals */
 };
 
-
-union GCObject {
-    GCheader gch; // 所有类型都包含GCheader，这里的gch是方便快速索引，减少索引层数
-    TString ts;
-    Closure cl;
-    Table h;
-    Proto p;
-    // lua_State th;  /* thread */
-
-    ~GCObject() {};
-};
-
 // 获取全局变量表
 inline TValue* _gt(lua_State* L) {
     return &L->l_gt;

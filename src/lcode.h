@@ -4,7 +4,6 @@
 #include "lparser.h"
 
 struct FuncState;
-union TString;
 
 enum BinOpr {
 	OPR_ADD,
