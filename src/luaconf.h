@@ -10,3 +10,7 @@ inline int lua_readline(char* buff, const char* prmt) {
 	fflush(stdout);
 	return fgets(buff, LUA_MAXINPUT, stdin) != nullptr;
 }
+
+inline double lua_str2number(const char* s, char** p) {
+	return strtod(s, p);
+}

@@ -162,6 +162,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\lopcodes.h" />
+    <ClInclude Include="src\luaconf.h" />
     <ClInclude Include="src\lualib.h" />
     <ClInclude Include="src\lauxlib.h" />
     <ClInclude Include="src\lcode.h" />

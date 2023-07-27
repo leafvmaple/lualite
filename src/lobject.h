@@ -57,6 +57,9 @@ struct TString: GCheader {
 
 inline size_t keyhash(const TValue& k) {
     switch (k.tt) {
+    case LUA_TNUMBER: {
+        return (size_t)k.value.n;
+    }
     case LUA_TSTRING: {
         TString* s = (TString*)k.value.gc;
         return std::hash<std::string>{}(s->s);
@@ -87,7 +90,6 @@ struct Table : GCheader {
 
 struct Closure : GCheader {
     lu_byte isC       = false;
-    lu_byte nupvalues = 0;
     GCObject* gclist  = nullptr;
     Table* env        = nullptr;
 };
@@ -139,3 +141,5 @@ void setobj(TValue* desc, const TValue* src);
 
 const TValue luaO_nilobject_;
 #define luaO_nilobject (&luaO_nilobject_)
+
+int luaO_str2d(const char* s, lua_Number* result);

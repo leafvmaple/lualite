@@ -15,7 +15,7 @@
 
 struct CallInfo
 {
-    TValue* top = nullptr;
+    TValue* top  = nullptr;
     TValue* base = nullptr;
     TValue* func = nullptr;
 
@@ -31,28 +31,29 @@ struct stringtable {
 struct global_State
 {
     stringtable strt;
-    lu_byte currentwhite;
+    lu_byte currentwhite = 0;
     std::list<GCheader*> rootgc;
-    lu_mem GCthreshold;
+    lu_mem GCthreshold = 0;
     TValue l_registry;
     TString* tmname[TM_N];  /* array with tag-method names */
 };
 
 struct lua_State : GCheader
 {
-    TValue* top = nullptr;
+    TValue* top  = nullptr;
     TValue* base = nullptr;
 
     std::vector<TValue> stack;
     std::vector<CallInfo> base_ci;
 
-    global_State* l_G = nullptr;
-    CallInfo* ci = nullptr;
+    global_State* l_G          = nullptr;
+    CallInfo* ci               = nullptr;
     const Instruction* savedpc = nullptr; // 当前函数的起始指令
 
-    unsigned short nCcalls = 0;
+    unsigned short nCcalls     = 0;
 
     TValue l_gt;  /* table of globals */
+    TValue env;
 };
 
 // 获取全局变量表

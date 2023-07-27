@@ -37,6 +37,7 @@ struct expdesc {
     expkind k;
     union {
         struct { int info, aux; } s;
+        lua_Number nval;  // 表达式为数字
     } u;
 };
 

@@ -29,6 +29,10 @@ static void discharge2reg(FuncState* fs, expdesc* e, int reg) {
         luaK_codeABx(fs, OP_LOADK, reg, e->u.s.info);
         break;
     }
+    case VKNUM: {
+        luaK_codeABx(fs, OP_LOADK, reg, luaK_numberK(fs, e->u.nval));
+        break;
+    }
     case VRELOCABLE: {
         // 可重新分配，直接把新寄存器位置设到指令A参数即可（指令会通过A参数从指定寄存器取值）
         Instruction* pc = &getcode(fs, e);
@@ -114,5 +118,11 @@ void luaK_ret(FuncState* fs, int first, int nret) {
 int luaK_stringK(FuncState* fs, TString* s) {
     TValue o;
     setsvalue(&o, s, s->s.c_str());
+    return addk(fs, &o, &o);
+}
+
+int luaK_numberK(FuncState* fs, lua_Number r) {
+    TValue o;
+    setnvalue(&o, r);
     return addk(fs, &o, &o);
 }

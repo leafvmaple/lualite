@@ -42,3 +42,4 @@ void luaK_exp2nextreg(FuncState* fs, expdesc* e);
 void luaK_storevar(FuncState* fs, expdesc* var, expdesc* e);
 void luaK_ret(FuncState* fs, int first, int nret);
 int luaK_stringK(FuncState* fs, TString* s);
+int luaK_numberK(FuncState* fs, lua_Number r);

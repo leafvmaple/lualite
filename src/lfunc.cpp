@@ -15,7 +15,6 @@ CClosure* luaF_newCclosure(lua_State* L, int nelems, Table* e) {
 
     c->isC = true;
     c->env = e;
-    c->nupvalues = nelems;
 
     return c;
 }
@@ -27,7 +26,6 @@ LClosure* luaF_newLclosure(lua_State* L, int nelems, Table* e) {
 
     l->isC = false;
     l->env = e;
-    l->nupvalues = nelems;
 
     return l;
 }

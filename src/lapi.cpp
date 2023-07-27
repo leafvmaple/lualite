@@ -17,7 +17,9 @@ TValue* index2adr(lua_State* L, int idx) {
     else switch (idx) {  /* pseudo-indices */
     case LUA_REGISTRYINDEX: return _registry(L);
     case LUA_ENVIRONINDEX: {
-        return nullptr;
+        Closure* func = static_cast<Closure*>(L->ci->func->value.gc);
+        sethvalue(&L->env, func->env);
+        return &L->env;
     }
     case LUA_GLOBALSINDEX: return _gt(L);
     default: {

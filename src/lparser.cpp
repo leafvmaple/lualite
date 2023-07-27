@@ -194,8 +194,12 @@ static void primaryexp(LexState* ls, expdesc* v) {
 }
 
 static void simpleexp(LexState* ls, expdesc* v) {
-    switch (ls->t.token)
-    {
+    switch (ls->t.token) {
+    case TK_NUMBER: {
+        init_exp(v, VKNUM, 0);
+        v->u.nval = ls->t.seminfo.r;
+        break;
+    }
     case TK_STRING: {
         codestring(ls, v, ls->t.seminfo.ts);
         break;

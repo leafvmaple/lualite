@@ -27,6 +27,17 @@ TValue* newkey(lua_State* L, Table* t, const TValue* key) {
     return &t->node[*key];
 }
 
+// TODO
+const TValue* luaH_getnum(Table* t, int key) {
+    TValue o;
+    setnvalue(&o, key);
+    auto it = t->node.find(o);
+    if (it != t->node.end())
+        return &(*it).second;
+    return luaO_nilobject;
+}
+
+
 const TValue* luaH_getstr(Table* t, const TString* key) {
     TValue o;
     setsvalue(&o, key);
@@ -40,6 +51,7 @@ const TValue* luaH_get(Table* t, const TValue* key) {
     switch (key->tt) {
     case LUA_TNIL: return luaO_nilobject;
     case LUA_TSTRING: return luaH_getstr(t, (TString*)key->value.gc);
+    case LUA_TNUMBER: return luaH_getnum(t, key->value.n);
     }
 }
 

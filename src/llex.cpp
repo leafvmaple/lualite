@@ -68,6 +68,16 @@ void luaX_setinput(lua_State* L, LexState* ls, ZIO* z, TString* source) {
     next(ls);
 }
 
+/* LUA_NUMBER */
+static void read_numeral(LexState* ls, SemInfo* seminfo) {
+    do {
+        save_and_next(ls);
+    } while (isdigit(ls->current) || ls->current == '.');
+    while (isalnum(ls->current) || ls->current == '_')
+        save_and_next(ls);
+    luaO_str2d(ls->buff.c_str(), &seminfo->r);
+}
+
 static void read_string(LexState* ls, int del, SemInfo* seminfo) {
     save_and_next(ls);
     while (ls->current != del) {
@@ -77,13 +87,13 @@ static void read_string(LexState* ls, int del, SemInfo* seminfo) {
     seminfo->ts = luaX_newstring(ls, ls->buff.c_str() + 1, ls->buff.size() - 2);
 }
 
-static int llex(LexState* ls, SemInfo* semInfo) {
+static int llex(LexState* ls, SemInfo* seminfo) {
     ls->buff.clear();
     while (true) {
         switch (ls->current) {
         case '"':
         case '\'': {
-            read_string(ls, ls->current, semInfo);
+            read_string(ls, ls->current, seminfo);
             return TK_STRING;
         }
         case EOZ: {
@@ -94,6 +104,10 @@ static int llex(LexState* ls, SemInfo* semInfo) {
                 next(ls);
                 continue;
             }
+            else if (isdigit(ls->current)) {
+                read_numeral(ls, seminfo);
+                return TK_NUMBER;
+            }
             else if (isalpha(ls->current) || ls->current == '_') {
                 TString* ts = nullptr;
                 do {
@@ -103,7 +117,7 @@ static int llex(LexState* ls, SemInfo* semInfo) {
                 if (ts->reserved)
                     return ts->reserved - 1 + FIRST_RESERVED;
                 else {
-                    semInfo->ts = ts;
+                    seminfo->ts = ts;
                     return TK_NAME;
                 }
             }

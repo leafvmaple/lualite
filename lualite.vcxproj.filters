@@ -128,5 +128,8 @@
     <ClInclude Include="src\lopcodes.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\luaconf.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
