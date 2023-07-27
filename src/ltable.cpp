@@ -6,8 +6,7 @@
 // Table Ïà¹Ø
 
 void setarrayvector(lua_State* L, Table* t, int size) {
-    t->array = new std::vector<TValue>;
-    t->array->resize(size);
+    t->array.resize(size);
 }
 
 void setnodevector(lua_State* L, Table* t, int size) {

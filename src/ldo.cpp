@@ -7,13 +7,14 @@
 // | ci->func | ci->base | ... |        | LUA_MINSTACK - 1 .. | ci->top |
 // |          | L->base  | ... | L->top |
 int luaD_precall(lua_State* L, TValue* func, int nresults) {
-    LClosure* cl = nullptr;
+    Closure* cl = nullptr;
     CallInfo* ci = nullptr;
     int n = 0;
 
-    cl = &func->value.gc->cl.l;
+    cl = &func->value.gc->cl;
     L->ci->savedpc = L->savedpc;
     if (!cl->isC) {
+        LClosure* l = static_cast<LClosure*>(cl);
         ci = ++L->ci;
         ci->func = func;
         ci->base = ci->func + 1;
@@ -22,13 +23,13 @@ int luaD_precall(lua_State* L, TValue* func, int nresults) {
 
         L->base = ci->base;
         L->top = ci->top;
-        L->savedpc = &cl->p->code.front();
+        L->savedpc = &l->p->code.front();
 
         return PCRLUA;
     }
     else {
         int n = 0;
-        CClosure* c = &func->value.gc->cl.c;
+        CClosure* c = static_cast<CClosure*>(cl);
         ci = ++L->ci;
         ci->func = func;
         ci->base = ci->func + 1;
@@ -68,11 +69,11 @@ struct SParser {  /* data to `f_parser' */
 
 void f_parser(lua_State* L, SParser* p) {
     Proto* tf = nullptr;
-    Closure* cl = nullptr;
+    LClosure* cl = nullptr;
 
     tf = luaY_parser(L, p->z, p->name);
     cl = luaF_newLclosure(L, 0, &_gt(L)->value.gc->h);
-    cl->l.p = tf;
+    cl->p = tf;
     setclvalue(L->top, cl);
     L->top++;
 }

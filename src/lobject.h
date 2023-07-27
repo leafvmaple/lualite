@@ -49,11 +49,10 @@ struct TValue {
 #endif
 
 union TString {
-    L_Umaxalign dummy;  /* ensures maximum alignment for strings */
     struct Genuine : GCheader {
-        lu_byte reserved;      // 字符串为系统保留标识符时，这里不为0
-        unsigned int hash;
-        size_t len;
+        lu_byte reserved  = 0;      // 字符串为系统保留标识符时，这里不为0
+        unsigned int hash = 0;
+        size_t len        = 0;
         char s[0];
 
         ~Genuine() {}
@@ -86,17 +85,17 @@ struct KeyFunction {
 
 
 struct Table : GCheader {
-    Table* metatable;
-    std::vector<TValue>* array;
+    Table* metatable = nullptr;
+    std::vector<TValue> array;
     std::unordered_map<const TValue, TValue, KeyFunction> node;
 };
 
 
-struct ClosureHeader : GCheader {
-    lu_byte isC;
-    lu_byte nupvalues;
-    GCObject* gclist;
-    Table* env;
+struct Closure : GCheader {
+    lu_byte isC       = false;
+    lu_byte nupvalues = 0;
+    GCObject* gclist  = nullptr;
+    Table* env        = nullptr;
 };
 
 struct UpVal : GCheader {
@@ -115,29 +114,22 @@ struct UpVal : GCheader {
 };
 
 struct Proto : GCheader {
-    std::vector<TValue>* k; /* 被该函数引用到的常量 */
+    std::vector<TValue> k; /* 被该函数引用到的常量 */
     std::vector<Instruction> code; /* 指令列表 */
     std::vector<int> lineinfo; /* 指令列表中每个指令所在的line */
-    struct Proto** p;  /* 函数内嵌套函数 */
+    Proto** p = nullptr;  /* 函数内嵌套函数 */
 };
 
 // C函数中的指令和数据都在代码段数据段中，只需要一个函数指针入口即可
-struct CClosure : ClosureHeader {
-    lua_CFunction f;    // 函数指针
+struct CClosure : Closure {
+    lua_CFunction f = nullptr;    // 函数指针
     TValue upvalue[0];
 };
 
 // Lua函数的指令，数据需要自行管理，因此需要一个Proto来存储
-struct LClosure : ClosureHeader {
-    Proto* p;    // 函数原型
+struct LClosure : Closure {
+    Proto* p = nullptr;    // 函数原型
     UpVal* upvals[1];
-};
-
-union Closure {
-    CClosure c;
-    LClosure l;
-
-    ~Closure() {}
 };
 
 bool ttisnumber(TValue* obj);

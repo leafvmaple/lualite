@@ -35,9 +35,9 @@ void luaV_execute(lua_State* L, int nexeccalls) {
     TValue* k = nullptr;
 
     pc = L->savedpc;
-    cl = &L->ci->func->value.gc->cl.l;
+    cl = static_cast<LClosure*>(&L->ci->func->value.gc->cl);
     base = L->base;
-    k = &cl->p->k->front();
+    k = &cl->p->k.front();
 
     while (true) {
         const Instruction i = *pc++;

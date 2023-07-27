@@ -87,9 +87,3 @@ struct Instruction {
 };
 
 // typedef lu_int32 Instruction;
-
-union L_Umaxalign {
-    double u;
-    void* s;
-    long l;
-};
