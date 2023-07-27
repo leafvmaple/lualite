@@ -10,7 +10,6 @@ void setarrayvector(lua_State* L, Table* t, int size) {
 }
 
 void setnodevector(lua_State* L, Table* t, int size) {
-    // t->node = new std::unordered_map<const TValue, TValue, KeyFunction>;
     t->node.reserve(size);
 }
 

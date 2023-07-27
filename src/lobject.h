@@ -13,12 +13,12 @@ typedef double lua_Number;
 struct TValue;
 union GCObject;
 
-struct GCheader {
+struct GCheader{
     // GCObject* next;
     TVALUE_TYPE tt = LUA_TNIL;
     lu_byte marked;
 
-    ~GCheader() {}
+    virtual ~GCheader() {}
 };
 
 union Value {
@@ -48,18 +48,18 @@ struct TValue {
 #define COPY_DEBUG_NAME(d, s)
 #endif
 
-struct TString: GCheader{
+struct TString: GCheader {
     lu_byte reserved  = 0;      // 字符串为系统保留标识符时，这里不为0
     unsigned int hash = 0;
     size_t len        = 0;
-    char s[0];
+    std::string s;
 };
 
 inline size_t keyhash(const TValue& k) {
     switch (k.tt) {
     case LUA_TSTRING: {
         TString* s = (TString*)k.value.gc;
-        return std::hash<const char*>{}(s->s);
+        return std::hash<std::string>{}(s->s);
     }
     default: {
         return 0;

@@ -10,18 +10,16 @@ TString* newlstr(lua_State* L, const char* str, size_t l) {
     TString* ts = nullptr;
     stringtable* tb = nullptr;
 
-    ts = (TString*)malloc(sizeof(TString) + (l + 1));
+    ts = new TString;
     ts->len = l;
     ts->hash = 0;
     ts->marked = _luaC_white(_G(L));
     ts->tt = LUA_TSTRING;
     ts->reserved = 0;
-
-    memcpy(ts->s, str, l * sizeof(char));
-    ts->s[l] = '\0';
+    ts->s = std::string(str, l);
 
     tb = &_G(L)->strt;
-    tb->hash[str] = ts;
+    tb->hash[ts->s] = ts;
     tb->nuse++;
 
     return ts;
@@ -30,7 +28,7 @@ TString* newlstr(lua_State* L, const char* str, size_t l) {
 TString* luaS_newlstr(lua_State* L, const char* str, size_t l) {
     GCheader* o = _G(L)->strt.hash[str];
     if (o) {
-        return (TString*)o;
+        return static_cast<TString*>(o);
     }
     return newlstr(L, str, l);
 }
