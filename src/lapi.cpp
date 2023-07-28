@@ -191,7 +191,7 @@ const char* lua_tolstring(lua_State* L, int idx, size_t* len){
     }
     TString* ts = static_cast<TString*>(o->value.gc);
     if (len)
-        *len = ts->len;
+        *len = ts->s.size();
     return ts->s.c_str();
 }
 

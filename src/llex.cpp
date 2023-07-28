@@ -49,7 +49,8 @@ const char* const luaX_tokens[] = {
 void luaX_init(lua_State* L) {
     for (int i = 0; i < NUM_RESERVED; i++) {
         TString* ts = luaS_new(L, luaX_tokens[i]);
-        ts->reserved = (lu_byte)(i + 1);
+        _luaS_fix(ts);
+        ts->reserved = (RESERVED)(i + FIRST_RESERVED);
     }
 }
 
@@ -115,7 +116,7 @@ static int llex(LexState* ls, SemInfo* seminfo) {
                 } while (isalnum(ls->current) || ls->current == '_');
                 ts = luaX_newstring(ls, ls->buff.c_str(), ls->buff.size());
                 if (ts->reserved)
-                    return ts->reserved - 1 + FIRST_RESERVED;
+                    return ts->reserved;
                 else {
                     seminfo->ts = ts;
                     return TK_NAME;

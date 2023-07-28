@@ -1,12 +1,12 @@
 #pragma once
 
-#define LUA_PROMPT		"> "
-#define LUA_PROMPT2		">> "
+#define LUA_PROMPT          "> "
+#define LUA_PROMPT2         ">> "
 
-#define LUA_NUMBER_FMT		"%.14g"
+#define LUA_NUMBER_FMT      "%.14g"
 
-#define LUAI_MAXNUMBER2STR	32 /* 16 digits, sign, point, and \0 */
-#define LUA_MAXINPUT	512
+#define LUAI_MAXNUMBER2STR  32 /* 16 digits, sign, point, and \0 */
+#define LUA_MAXINPUT        512
 
 inline int lua_readline(char* buff, const char* prmt) {
     fputs(prmt, stdout);

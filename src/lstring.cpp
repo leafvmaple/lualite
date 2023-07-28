@@ -11,11 +11,9 @@ TString* newlstr(lua_State* L, const char* str, size_t l) {
     stringtable* tb = nullptr;
 
     ts = new TString;
-    ts->len = l;
     ts->hash = 0;
     ts->marked = _luaC_white(_G(L));
     ts->tt = LUA_TSTRING;
-    ts->reserved = 0;
     ts->s = std::string(str, l);
 
     tb = &_G(L)->strt;

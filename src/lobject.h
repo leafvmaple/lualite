@@ -13,6 +13,48 @@ typedef double lua_Number;
 struct TValue;
 union GCObject;
 
+#define FIRST_RESERVED	257
+
+enum RESERVED {
+    /* terminal symbols denoted by reserved words */
+    TK_NONE,
+    TK_AND = FIRST_RESERVED,
+    TK_BREAK,
+    TK_DO,
+    TK_ELSE,
+    TK_ELSEIF,
+    TK_END,
+    TK_FALSE,
+    TK_FOR,
+    TK_FUNCTION,
+    TK_IF,
+    TK_IN,
+    TK_LOCAL,
+    TK_NIL,
+    TK_NOT,
+    TK_OR,
+    TK_REPEAT,
+    TK_RETURN,
+    TK_THEN,
+    TK_TRUE,
+    TK_UNTIL,
+    TK_WHILE,
+    TK_RESERVED_COUNT,
+    /* other terminal symbols */
+    TK_CONCAT = TK_RESERVED_COUNT,
+    TK_DOTS,
+    TK_EQ,
+    TK_GE,
+    TK_LE,
+    TK_NE,
+    TK_NUMBER,
+    TK_NAME,
+    TK_STRING,
+    TK_EOS
+};
+
+#define NUM_RESERVED	(TK_RESERVED_COUNT - FIRST_RESERVED)
+
 struct GCheader{
     // GCObject* next;
     TVALUE_TYPE tt = LUA_TNIL;
@@ -49,9 +91,8 @@ struct TValue {
 #endif
 
 struct TString: GCheader {
-    lu_byte reserved  = 0;      // 字符串为系统保留标识符时，这里不为0
+    RESERVED reserved = TK_NONE;      // 字符串为系统保留标识符时，这里不为0
     unsigned int hash = 0;
-    size_t len        = 0;
     std::string s;
 };
 
