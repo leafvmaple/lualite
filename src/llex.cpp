@@ -49,7 +49,7 @@ const char* const luaX_tokens[] = {
 void luaX_init(lua_State* L) {
     for (int i = 0; i < NUM_RESERVED; i++) {
         TString* ts = luaS_new(L, luaX_tokens[i]);
-        _luaS_fix(ts);
+        luaS_fix(ts);
         ts->reserved = (RESERVED)(i + FIRST_RESERVED);
     }
 }

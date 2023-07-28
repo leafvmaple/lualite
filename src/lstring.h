@@ -12,6 +12,6 @@ TString* luaS_newlstr(lua_State* L, const char* str, size_t l);
 inline TString* luaS_new(lua_State* L, const char* s) {
     return luaS_newlstr(L, s, strlen(s));
 }
-inline void _luaS_fix(TString* s) {
-    l_setbit((s)->marked, FIXEDBIT);
+inline void luaS_fix(TString* s) {
+    s->marked.set(FIXEDBIT);
 }

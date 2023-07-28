@@ -13,7 +13,7 @@ struct LG {
 // 1. 初始化l_G全局状态机
 // 2. 初始化全局变量表
 void preinit_state(lua_State* L, global_State* g) {
-    _G(L) = g;
+    G(L) = g;
     setnilvalue(_gt(L), "#Global Table#");
 }
 
@@ -58,8 +58,9 @@ lua_State* lua_newstate() {
     L = &l->l;
     g = &l->g;
 
-    g->currentwhite = bit2mask(WHITE0BIT, FIXEDBIT);
-    L->marked = _luaC_white(g);
+    g->currentwhite.set(WHITE0BIT);
+    g->currentwhite.set(FIXEDBIT);
+    L->marked = luaC_white(g);
     L->tt = LUA_TTHREAD;
 
     preinit_state(L, g);

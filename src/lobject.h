@@ -4,6 +4,7 @@
 #include <list>
 #include <vector>
 #include <unordered_map>
+#include <bitset>
 
 #include "lua.h"
 #include "llimits.h"
@@ -58,7 +59,7 @@ enum RESERVED {
 struct GCheader{
     // GCObject* next;
     TVALUE_TYPE tt = LUA_TNIL;
-    lu_byte marked;
+    std::bitset<8> marked;
 
     virtual ~GCheader() {}
 };

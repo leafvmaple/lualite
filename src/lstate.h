@@ -3,6 +3,7 @@
 #include <vector>
 #include <list>
 #include <unordered_map>
+#include <bitset>
 
 #include "lobject.h"
 #include "ltm.h"
@@ -33,7 +34,7 @@ struct stringtable {
 struct global_State
 {
     stringtable strt;
-    lu_byte currentwhite = 0;
+    std::bitset<8> currentwhite;
     std::list<GCheader*> rootgc;
     lu_mem GCthreshold = 0;
     TValue l_registry;
@@ -64,12 +65,12 @@ inline TValue* _gt(lua_State* L) {
 }
 
 // 获取全局状态机
-inline global_State* &_G(lua_State* L) {
+inline global_State* &G(lua_State* L) {
     return L->l_G;
 }
 
 inline TValue* _registry(lua_State* L) {
-    return &_G(L)->l_registry;
+    return &G(L)->l_registry;
 }
 
 void f_luaopen(lua_State* L);
