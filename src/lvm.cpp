@@ -2,6 +2,8 @@
 #include "ldo.h"
 #include "ltable.h"
 #include "lstate.h"
+#include "lstring.h"
+#include "luaconf.h"
 #include "lopcodes.h"
 
 inline TValue* RA(TValue* base, Instruction i) {
@@ -15,6 +17,15 @@ inline TValue* RC(TValue* base, Instruction i) {
 }
 inline TValue* KBx(TValue* base, Instruction i) {
     return base + GETARG_Bx(i);
+}
+
+
+int luaV_tostring(lua_State* L, TValue* obj) {
+    char s[LUAI_MAXNUMBER2STR];
+    lua_Number n = obj->value.n;
+    lua_number2str(s, n);
+    setsvalue(obj, luaS_new(L, s), s);
+    return 1;
 }
 
 void luaV_gettable(lua_State* L, const TValue* t, TValue* key, TValue* val) {

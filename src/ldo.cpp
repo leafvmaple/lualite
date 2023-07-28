@@ -34,6 +34,7 @@ int luaD_precall(lua_State* L, TValue* func, int nresults) {
         ci->func = func;
         ci->base = ci->func + 1;
         ci->top = L->top + LUA_MINSTACK;
+        ci->nresults = nresults;
 
         L->base = ci->base;
         n = c->f(L);
@@ -56,9 +57,13 @@ int luaD_poscall(lua_State* L, TValue* firstResult) {
     CallInfo* ci = nullptr;
 
     ci = L->ci--;
-    L->top = ci->func;
+    res = ci->func;
     L->base = L->ci->base;
     L->savedpc = L->ci->savedpc;
+
+    for (int i = ci->nresults; i != 0 && firstResult < L->top; i--)
+        setobj(res++, firstResult++);
+    L->top = res;
     return 0;
 }
 

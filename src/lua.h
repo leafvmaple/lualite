@@ -47,7 +47,9 @@ void* lua_touserdata(lua_State* L, int idx);
 
 void lua_gettable(lua_State* L, int idx);
 void lua_getfield(lua_State* L, int idx, const char* k);
-inline void lua_getglobal(lua_State* L, int idx, const char* k);
+inline void lua_getglobal(lua_State* L, const char* k) {
+    lua_getfield(L, LUA_GLOBALSINDEX, k);
+}
 
 void lua_settable(lua_State* L, int idx);
 void lua_setfield(lua_State* L, int idx, const char* k);

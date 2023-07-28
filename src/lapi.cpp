@@ -126,10 +126,6 @@ void lua_getfield(lua_State* L, int idx, const char* k) {
     L->top++;
 }
 
-void lua_getglobal(lua_State* L, int idx, const char* k) {
-    lua_getfield(L, LUA_GLOBALSINDEX, k);
-}
-
 int lua_gettop(lua_State* L) {
     return static_cast<int>(L->top - L->base);
 }
@@ -190,6 +186,9 @@ int lua_load(lua_State* L, lua_Reader reader, void* data, const char* chunkname)
 
 const char* lua_tolstring(lua_State* L, int idx, size_t* len){
     TValue* o = index2adr(L, idx);
+    if (!ttisstring(o)) {
+        luaV_tostring(L, o);
+    }
     TString* ts = static_cast<TString*>(o->value.gc);
     if (len)
         *len = ts->len;

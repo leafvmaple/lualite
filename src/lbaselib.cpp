@@ -1,6 +1,18 @@
 #include "lualib.h"
 #include "lauxlib.h"
 
+static int luaB_tostring(lua_State* L) {
+    switch (lua_type(L, 1)) {
+    case LUA_TNUMBER:
+        lua_pushstring(L, lua_tostring(L, 1));
+        break;
+    case LUA_TSTRING:
+        lua_pushvalue(L, 1);
+        break;
+    }
+    return 1;
+}
+
 /*
 ** If your system does not support `stdout', you can just remove this function.
 ** If you need, you can define your own `print' function, following this
@@ -10,7 +22,7 @@
 static int luaB_print(lua_State* L) {
     int n = lua_gettop(L);  /* number of arguments */
     for (int i = 1; i <= n; i++) {
-        const char* s;
+        const char* s = nullptr;
         s = lua_tostring(L, -1);  /* get result */
         if (i > 1) fputs("\t", stdout);
         fputs(s, stdout);
@@ -22,6 +34,7 @@ static int luaB_print(lua_State* L) {
 
 static const luaL_Reg base_funcs[] = {
     {"print", luaB_print},
+    {"tostring", luaB_tostring},
     {nullptr, nullptr}
 };
 

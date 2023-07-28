@@ -127,7 +127,12 @@ struct LClosure : Closure {
     std::vector<UpVal*> upvals;
 };
 
-bool ttisnumber(TValue* obj);
+inline bool ttisnumber(TValue* obj) {
+    return obj->tt == LUA_TNUMBER;
+}
+inline bool ttisstring(TValue* obj) {
+    return obj->tt == LUA_TSTRING;
+}
 
 void setnilvalue(TValue* obj _DECL);
 void setnvalue(TValue* obj, const lua_Number n _DECL);

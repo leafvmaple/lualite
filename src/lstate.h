@@ -19,6 +19,8 @@ struct CallInfo
     TValue* base = nullptr;
     TValue* func = nullptr;
 
+    int nresults = 0; // 这个函数调用接受多少个返回值
+
     const Instruction* savedpc = nullptr;
 };
 

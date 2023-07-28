@@ -1,10 +1,6 @@
 #include "lobject.h"
 #include "luaconf.h"
 
-bool ttisnumber(TValue* obj){
-    return obj->tt == LUA_TNUMBER;
-}
-
 void setnilvalue(TValue* obj _IMPL) {
     obj->tt = LUA_TNIL;
     SET_DEBUG_NAME(obj, debug);
