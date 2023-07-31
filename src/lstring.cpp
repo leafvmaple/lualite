@@ -13,7 +13,6 @@ TString* newlstr(lua_State* L, const char* str, size_t l) {
     ts = new TString;
     ts->hash = 0;
     luaC_white(ts->marked, G(L));
-    ts->tt = LUA_TSTRING;
     ts->s = std::string(str, l);
 
     tb = &G(L)->strt;

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <functional>
+
 struct lua_State;
 
 #define LUA_VERSION     "Lua Lite 0.1.1"
@@ -31,7 +33,7 @@ enum TVALUE_TYPE {
 #define _DECL , char const* debug = nullptr
 #define _IMPL , char const* debug
 
-typedef int (*lua_CFunction) (lua_State* L);
+typedef std::function<int(lua_State*)> lua_CFunction;
 typedef const char* (*lua_Reader) (lua_State* L, void* ud, size_t* sz);
 
 lua_State* lua_newstate();

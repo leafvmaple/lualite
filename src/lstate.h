@@ -27,7 +27,7 @@ struct CallInfo
 struct stringtable {
     // TODO
     std::unordered_map<std::string, GCheader*> hash;
-    lu_int32 nuse;
+    lu_int32                                   nuse = 0;
 };
 
 struct global_State
@@ -56,6 +56,8 @@ struct lua_State : GCheader
 
     TValue l_gt;  /* table of globals */
     TValue env;
+
+    lua_State() { tt = LUA_TTHREAD; }
 };
 
 // 获取全局变量表

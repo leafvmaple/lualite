@@ -119,9 +119,11 @@ struct TValue {
 #endif
 
 struct TString: GCheader {
-    RESERVED reserved = TK_NONE;      // 字符串为系统保留标识符时，这里不为0
-    unsigned int hash = 0;
-    std::string s;
+    RESERVED     reserved = TK_NONE;      // 字符串为系统保留标识符时，这里不为0
+    unsigned int hash     = 0;
+    std::string  s;
+
+    TString() { tt = LUA_TSTRING; }
 };
 
 inline size_t keyhash(const TValue& k) {
@@ -158,9 +160,9 @@ struct Table : GCheader {
 
 
 struct Closure : GCheader {
-    lu_byte isC       = false;
+    lu_byte   isC     = false;
     GCObject* gclist  = nullptr;
-    Table* env        = nullptr;
+    Table*    env     = nullptr;
 };
 
 struct UpVal : GCheader {
@@ -178,15 +180,15 @@ struct UpVal : GCheader {
 
 // 包含操作和数据的完整可执行模块
 struct Proto : GCheader {
-    std::vector<TValue> k; /* 被该函数引用到的常量 */
-    std::vector<Instruction> code; /* 指令列表 */
-    std::vector<int> lineinfo; /* 指令列表中每个指令所在的line */
-    Proto** p = nullptr;  /* 函数内嵌套函数 */
+    std::vector<TValue>      k;            /* 被该函数引用到的常量 */
+    std::vector<Instruction> code;         /* 指令列表 */
+    std::vector<int>         lineinfo;     /* 指令列表中每个指令所在的line */
+    Proto**                  p = nullptr;  /* 函数内嵌套函数 */
 };
 
 // C函数中的指令和数据都在代码段数据段中，只需要一个函数指针入口即可
 struct CClosure : Closure {
-    lua_CFunction f = nullptr;    // 函数指针
+    lua_CFunction       f = nullptr;    // 函数指针
     std::vector<TValue> upvalue;
 
     CClosure() { isC = true; }
@@ -194,7 +196,7 @@ struct CClosure : Closure {
 
 // Lua函数的指令和数据需要自行管理，因此需要一个Proto来存储
 struct LClosure : Closure {
-    Proto* p = nullptr;    // 函数原型
+    Proto*              p = nullptr;    // 函数原型
     std::vector<UpVal*> upvals;
 
     LClosure() { isC = false; }

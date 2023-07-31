@@ -5,7 +5,7 @@
 #include "lgc.h"
 
 struct LG {
-    lua_State l;
+    lua_State    l;
     global_State g;
 };
 
@@ -61,10 +61,8 @@ lua_State* lua_newstate() {
     g->currentwhite.set(WHITE0BIT);
     g->currentwhite.set(FIXEDBIT);
     luaC_white(L->marked, g);
-    L->tt = LUA_TTHREAD;
 
     preinit_state(L, g);
-    g->strt.nuse = 0;
     g->rootgc.push_back(L);
 
     f_luaopen(L);
