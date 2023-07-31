@@ -51,9 +51,9 @@ void dotty(lua_State* L) {
 }
 
 struct Smain {
-    int argc;
-    char** argv;
-    int status;
+    int argc    = 0;
+    char** argv = nullptr;
+    int status  = 0;
 };
 
 static int pmain(lua_State* L) {

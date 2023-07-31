@@ -3,21 +3,10 @@
 #include "lobject.h"
 #include "lstate.h"
 
-#define bitmask(b)	(1<<(b))
-#define bit2mask(b1,b2)	(bitmask(b1) | bitmask(b2))
-
-#define WHITE0BIT	0
-#define WHITE1BIT	1
-#define BLACKBIT	2
-#define FINALIZEDBIT	3
-#define KEYWEAKBIT	3
-#define VALUEWEAKBIT	4
-#define FIXEDBIT	5          // ²»»áGC
-#define SFIXEDBIT	6
-#define WHITEBITS	bit2mask(WHITE0BIT, WHITE1BIT)
-
 void luaC_link(lua_State* L, GCheader* o, TVALUE_TYPE tt);
 
-inline lu_byte luaC_white(global_State* g) {
-    return static_cast<lu_byte>(g->currentwhite.to_ulong() & WHITEBITS);
+inline void luaC_white(lua_marked &marked, global_State* g) {
+    marked.reset();
+    marked[WHITE0BIT] = g->currentwhite[WHITE0BIT];
+    marked[WHITE1BIT] = g->currentwhite[WHITE1BIT];
 }

@@ -7,5 +7,5 @@ void luaC_link(lua_State* L, GCheader* o, TVALUE_TYPE tt) {
 
     g->rootgc.push_back(o);
     o->tt = tt;
-    o->marked = luaC_white(g);
+    luaC_white(o->marked, g);
 }

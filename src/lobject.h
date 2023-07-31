@@ -9,10 +9,30 @@
 #include "lua.h"
 #include "llimits.h"
 
-typedef double lua_Number;
+/*
+** Layout for bit use in `marked' field:
+** bit 0 - object is white (type 0)
+** bit 1 - object is white (type 1)
+** bit 2 - object is black
+** bit 3 - for userdata: has been finalized
+** bit 3 - for tables: has weak keys
+** bit 4 - for tables: has weak values
+** bit 5 - object is fixed (should not be collected)
+** bit 6 - object is "super" fixed (only the main thread)
+*/
 
-struct TValue;
-union GCObject;
+enum MARKED_TYPE {
+    WHITE0BIT,
+    WHITE1BIT,
+    BLACKBIT,
+    FINALIZEDBIT,
+    KEYWEAKBIT = FINALIZEDBIT,
+    VALUEWEAKBIT,
+    FIXEDBIT, // 不会GC
+    SFIXEDBIT,
+
+    MARKED_COUNT,
+};
 
 #define FIRST_RESERVED	257
 
@@ -56,10 +76,17 @@ enum RESERVED {
 
 #define NUM_RESERVED	(TK_RESERVED_COUNT - FIRST_RESERVED)
 
+typedef std::bitset<MARKED_COUNT> lua_marked;
+typedef double lua_Number;
+
+struct TValue;
+union GCObject;
+
+
 struct GCheader{
     // GCObject* next;
     TVALUE_TYPE tt = LUA_TNIL;
-    std::bitset<8> marked;
+    lua_marked marked;
 
     virtual ~GCheader() {}
 };
@@ -161,12 +188,16 @@ struct Proto : GCheader {
 struct CClosure : Closure {
     lua_CFunction f = nullptr;    // 函数指针
     std::vector<TValue> upvalue;
+
+    CClosure() { isC = true; }
 };
 
 // Lua函数的指令和数据需要自行管理，因此需要一个Proto来存储
 struct LClosure : Closure {
     Proto* p = nullptr;    // 函数原型
     std::vector<UpVal*> upvals;
+
+    LClosure() { isC = false; }
 };
 
 inline bool ttisnumber(TValue* obj) {

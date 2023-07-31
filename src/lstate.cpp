@@ -60,7 +60,7 @@ lua_State* lua_newstate() {
 
     g->currentwhite.set(WHITE0BIT);
     g->currentwhite.set(FIXEDBIT);
-    L->marked = luaC_white(g);
+    luaC_white(L->marked, g);
     L->tt = LUA_TTHREAD;
 
     preinit_state(L, g);

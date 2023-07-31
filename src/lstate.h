@@ -3,7 +3,6 @@
 #include <vector>
 #include <list>
 #include <unordered_map>
-#include <bitset>
 
 #include "lobject.h"
 #include "ltm.h"
@@ -34,7 +33,7 @@ struct stringtable {
 struct global_State
 {
     stringtable strt;
-    std::bitset<8> currentwhite;
+    lua_marked currentwhite;
     std::list<GCheader*> rootgc;
     lu_mem GCthreshold = 0;
     TValue l_registry;

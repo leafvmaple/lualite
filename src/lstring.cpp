@@ -3,7 +3,7 @@
 #include "lgc.h"
 
 void luaS_resize(lua_State* L, int newsize) {
-    G(L)->strt.hash.reserve(newsize);;
+    G(L)->strt.hash.reserve(newsize);
 }
 
 TString* newlstr(lua_State* L, const char* str, size_t l) {
@@ -12,7 +12,7 @@ TString* newlstr(lua_State* L, const char* str, size_t l) {
 
     ts = new TString;
     ts->hash = 0;
-    ts->marked = luaC_white(G(L));
+    luaC_white(ts->marked, G(L));
     ts->tt = LUA_TSTRING;
     ts->s = std::string(str, l);
 
