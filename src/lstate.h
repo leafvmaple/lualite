@@ -61,7 +61,7 @@ struct lua_State : GCheader
 };
 
 // 获取全局变量表
-inline TValue* _gt(lua_State* L) {
+inline TValue* gt(lua_State* L) {
     return &L->l_gt;
 }
 
@@ -70,7 +70,7 @@ inline global_State* &G(lua_State* L) {
     return L->l_G;
 }
 
-inline TValue* _registry(lua_State* L) {
+inline TValue* registry(lua_State* L) {
     return &G(L)->l_registry;
 }
 

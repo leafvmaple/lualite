@@ -76,6 +76,14 @@ static BinOpr getbinopr(int op) {
     }
 }
 
+static void pushclosure(LexState* ls, FuncState* func, expdesc* v) {
+    FuncState* fs = ls->fs;
+    Proto* f = fs->f;
+
+    f->p.emplace_back(func->f);
+    init_exp(v, VRELOCABLE, luaK_codeABx(fs, OP_CLOSURE, 0, 0));
+}
+
 static void open_func(LexState* ls, FuncState* fs) {
     lua_State* L = ls->L;
     fs->f = luaF_newproto(L);
@@ -120,10 +128,23 @@ static bool block_follow(int token) {
     switch (token)
     {
     case TK_EOS:
+    case TK_END:
         return true;
     default:
         return false;
     }
+}
+
+static void body(LexState* ls, expdesc* e, int needself, int line) {
+    /* body ->  `(' parlist `)' chunk END */
+    FuncState new_fs;
+    open_func(ls, &new_fs);
+    luaX_next(ls); // read '('
+    luaX_next(ls); // read ')'
+    chunk(ls);
+    check_match(ls, TK_END);
+    close_func(ls);
+    pushclosure(ls, &new_fs, e);
 }
 
 static int explist1(LexState* ls, expdesc* v) {
@@ -238,8 +259,25 @@ static void assignment(LexState* ls, expdesc* lh, int nvars) {
     luaK_storevar(ls->fs, lh, &e);
 }
 
-/* stat -> func | assignment */
+static int funcname(LexState* ls, expdesc* v) {
+    /* funcname -> NAME {field} [`:' NAME] */
+    singlevar(ls, v);
+    return false;
+}
+
+static void funcstat(LexState* ls, int line) {
+    /* funcstat -> FUNCTION funcname body */
+    int needself;
+    expdesc v, b;
+    luaX_next(ls);  /* skip FUNCTION */
+    needself = funcname(ls, &v);
+    body(ls, &b, needself, line);
+    luaK_storevar(ls->fs, &v, &b);
+}
+
+
 static void exprstat(LexState* ls) {
+    /* stat -> func | assignment */
     FuncState* fs = ls->fs;
     expdesc desc;
     primaryexp(ls, &desc);
@@ -250,8 +288,12 @@ static void exprstat(LexState* ls) {
 }
 
 static void statement(LexState* ls) {
+    int line = ls->linenumber;  /* may be needed for error messages */
     switch (ls->t.token)
     {
+    case TK_FUNCTION: {
+        funcstat(ls, line);  /* stat -> funcstat */
+    }
     default: {
         exprstat(ls);
     }

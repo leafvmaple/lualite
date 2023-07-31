@@ -14,7 +14,7 @@ struct LG {
 // 2. 初始化全局变量表
 void preinit_state(lua_State* L, global_State* g) {
     G(L) = g;
-    setnilvalue(_gt(L), "#Global Table#");
+    setnilvalue(gt(L), "#Global Table#");
 }
 
 // 1. 初始化base_ci
@@ -37,8 +37,8 @@ void stack_init(lua_State* L) {
 void f_luaopen(lua_State* L) {
     stack_init(L);
 
-    sethvalue(_gt(L), luaH_new(L, 0, 2));
-    sethvalue(_registry(L), luaH_new(L, 0, 2));
+    sethvalue(gt(L), luaH_new(L, 0, 2));
+    sethvalue(registry(L), luaH_new(L, 0, 2));
 
     luaS_resize(L, MINSTRTABSIZE);
 

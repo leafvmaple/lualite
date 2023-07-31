@@ -183,7 +183,7 @@ struct Proto : GCheader {
     std::vector<TValue>      k;            /* 被该函数引用到的常量 */
     std::vector<Instruction> code;         /* 指令列表 */
     std::vector<int>         lineinfo;     /* 指令列表中每个指令所在的line */
-    Proto**                  p = nullptr;  /* 函数内嵌套函数 */
+    std::vector<Proto*>      p;            /* 函数内嵌套函数 */
 };
 
 // C函数中的指令和数据都在代码段数据段中，只需要一个函数指针入口即可

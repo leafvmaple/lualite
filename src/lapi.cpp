@@ -15,13 +15,13 @@ TValue* index2adr(lua_State* L, int idx) {
         return L->top + idx;
     }
     else switch (idx) {  /* pseudo-indices */
-    case LUA_REGISTRYINDEX: return _registry(L);
+    case LUA_REGISTRYINDEX: return registry(L);
     case LUA_ENVIRONINDEX: {
         Closure* func = static_cast<Closure*>(L->ci->func->value.gc);
         sethvalue(&L->env, func->env);
         return &L->env;
     }
-    case LUA_GLOBALSINDEX: return _gt(L);
+    case LUA_GLOBALSINDEX: return gt(L);
     default: {
         return nullptr;
     }
@@ -31,7 +31,7 @@ TValue* index2adr(lua_State* L, int idx) {
 // 获取当前所在环境表
 Table* getcurrenv(lua_State* L) {
     if (L->ci == &L->base_ci.front())
-        return (Table*)_gt(L)->value.gc;
+        return static_cast<Table*>(gt(L)->value.gc);
 }
 
 // 将C函数压栈并调用
