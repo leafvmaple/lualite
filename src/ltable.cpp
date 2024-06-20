@@ -68,6 +68,6 @@ TValue* luaH_setstr(lua_State* L, Table* t, const TString* key){
 TValue* luaH_set(lua_State* L, Table* t, const TValue* key) {
     const TValue* p = luaH_get(t, key);
     if (p != luaO_nilobject)
-        return (TValue*) p;
+        return const_cast<TValue*>(p);
     return newkey(L, t, key);
 }

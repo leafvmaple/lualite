@@ -98,6 +98,7 @@ union Value {
     int b;
 };
 
+// Value With Type
 struct TValue {
 #ifdef _DEBUG
     std::string name;
@@ -132,8 +133,8 @@ inline size_t keyhash(const TValue& k) {
         return (size_t)k.value.n;
     }
     case LUA_TSTRING: {
-        TString* s = (TString*)k.value.gc;
-        return std::hash<std::string>{}(s->s);
+        TString* ts = (TString*)k.value.gc;
+        return std::hash<std::string>{}(ts->s);
     }
     default: {
         return 0;
@@ -170,8 +171,8 @@ struct UpVal : GCheader {
     union Practical {
         TValue value;  /* the value (when closed) */
         struct {  /* double linked list (when open) */
-            struct UpVal* prev = 0;
-            struct UpVal* next = 0;
+            struct UpVal* prev = nullptr;
+            struct UpVal* next = nullptr;
         } l;
 
         ~Practical() {}
